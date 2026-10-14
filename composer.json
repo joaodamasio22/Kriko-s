@@ -1,0 +1,15 @@
+{
+    "name": "user/kriko-s",
+    "autoload": {
+        "psr-4": {
+            "User\\KrikoS\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "João Damasio",
+            "email": "joaodamasio039@gmail.com"
+        }
+    ],
+    "require": {}
+}
