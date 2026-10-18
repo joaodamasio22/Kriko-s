@@ -1,9 +1,7 @@
 {
     "name": "user/kriko-s",
     "autoload": {
-        "psr-4": {
-            "User\\KrikoS\\": "src/"
-        }
+        "psr-0": {"": "src/"}
     },
     "authors": [
         {
@@ -11,5 +9,9 @@
             "email": "joaodamasio039@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "doctrine/orm": "^3",
+        "doctrine/dbal": "^4",
+        "symfony/cache": "^7"
+    }
 }
