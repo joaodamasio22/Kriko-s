@@ -18,4 +18,30 @@ class Categoria
         $this->produtos = new ArrayCollection();
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getNome()
+    {
+        return $this->nome;
+    }
+
+    public function getDescricao()
+    {
+        return $this->descricao;
+    }
+
+    public function setNome(string $nome)
+    {
+        $this->nome = $nome;
+        return $this;
+    }
+
+    public function setDescricao(?string $descricao)
+    {
+        $this->descricao = $descricao;
+        return $this;
+    }
 }
