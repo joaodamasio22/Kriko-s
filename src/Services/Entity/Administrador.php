@@ -12,7 +12,7 @@ class Administrador
     private string $email;
     private string $senha;
     private string $perfil;
-    private bool $ativo = true;
+    private string $ativo = 'T';
     private ?\DateTime $dataCadastro = null;
 
     private Collection $pedidos;
@@ -89,7 +89,7 @@ class Administrador
         return $this;
     }
 
-    public function setAtivo(string $ativo): bool
+    public function setAtivo(string $ativo)
     {
         $this->ativo = $ativo;
         return $this;
