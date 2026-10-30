@@ -10,5 +10,11 @@ class ItemPedido
     private int $quantidade;
     private string $precoUnitario;
 
+    // Getters
+    public fuction getId()
+    {
+        return $this->id;
+    }
+
 
 }
