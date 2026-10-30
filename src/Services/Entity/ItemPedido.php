@@ -11,9 +11,29 @@ class ItemPedido
     private string $precoUnitario;
 
     // Getters
-    public fuction getId()
+    public function getId()
     {
         return $this->id;
+    }
+
+    public function getPedido()
+    {
+        return $this->pedido;
+    }
+
+    public function getProduto()
+    {
+        return $this->produto;
+    }
+
+    public function getQuantidade()
+    {
+        return $this->quantidade;
+    }
+
+    public function getPrecoUnitario()
+    {
+        return $this->precoUnitario
     }
 
 
