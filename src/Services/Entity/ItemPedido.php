@@ -10,7 +10,6 @@ class ItemPedido
     private int $quantidade;
     private string $precoUnitario;
 
-<<<<<<< Updated upstream
     // Getters
     public function getId()
     {
@@ -34,10 +33,38 @@ class ItemPedido
 
     public function getPrecoUnitario()
     {
-        return $this->precoUnitario
+        return $this->precoUnitario;
     }
 
+    // Setters
+    public function setId(?int $id)
+    {
+        $this->id = $id;
+        return $this;
+    }
 
-=======
->>>>>>> Stashed changes
+    public function setPedido(Pedido $pedido)
+    {
+        $this->pedido = $pedido;
+        return $this;
+    }
+
+    public function setProduto(Produto $produto)
+    {
+        $this->produto = $produto;
+        return $this;
+    }
+
+    public function setQuantidade(int $quantidade)
+    {
+        $this->quantidade = $quantidade;
+        return $this;
+    }
+
+    public function setPrecoUnitario(string $precoUnitario)
+    {
+        $this->precoUnitario = $precoUnitario;
+        return $this;
+    } 
+
 }

@@ -2,6 +2,7 @@
 
 namespace Kriko\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
@@ -54,16 +55,6 @@ class Administrador
         return $this->ativo;
     }
 
-    public function getNome()
-    {
-        return $this->nome;
-    }
-
-    public function getDataCadastro()
-    {
-        return $this->dataCadastro
-    }
-
     // Setters
     public function setNome(string $nome)
     {
@@ -71,11 +62,11 @@ class Administrador
         return $this;
     }
 
-    public function setNome(string $email)
-    {
-        $this->email = $email;
-        return $this;
-    }
+        public function setEmail(string $email)
+        {
+            $this->email = $email;
+            return $this;
+        }
 
     public function setSenha(string $senha)
     {
@@ -83,7 +74,7 @@ class Administrador
         return $this;
     }
 
-    public function setPerfil(string $nome)
+    public function setPerfil(string $perfil)
     {
         $this->perfil = $perfil;
         return $this;
@@ -95,7 +86,7 @@ class Administrador
         return $this;
     }
 
-    public function setPerfil(DateTime $dataCadastro)
+    public function setDataCadastro(DateTime $dataCadastro)
     {
         $this->dataCadastro = $dataCadastro;
         return $this;

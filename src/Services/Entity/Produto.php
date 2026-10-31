@@ -2,6 +2,7 @@
 
 namespace Kriko\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
@@ -62,13 +63,13 @@ class Produto
 
     public function getDataCadastro()
     {
-        return $this->dataCadastro
+        return $this->dataCadastro;
     }
 
     // Setters
     public function setCategoria(Categoria $categoria)
     {
-        $this->categoria = categoria;
+        $this->categoria = $categoria;
         return $this;
     }
 
@@ -99,7 +100,7 @@ class Produto
 
     public function setDisponivel(int $disponivel)
     {
-        $this->disponivele = $disponivel;
+        $this->disponivel = $disponivel;
         return $this;
     }
 

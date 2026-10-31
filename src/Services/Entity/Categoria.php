@@ -18,6 +18,7 @@ class Categoria
         $this->produtos = new ArrayCollection();
     }
 
+    // Getters
     public function getId()
     {
         return $this->id;
@@ -33,6 +34,7 @@ class Categoria
         return $this->descricao;
     }
 
+    // Setters
     public function setNome(string $nome)
     {
         $this->nome = $nome;
@@ -44,4 +46,5 @@ class Categoria
         $this->descricao = $descricao;
         return $this;
     }
+
 }
