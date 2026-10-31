@@ -10,6 +10,7 @@ class ItemPedido
     private int $quantidade;
     private string $precoUnitario;
 
+<<<<<<< Updated upstream
     // Getters
     public function getId()
     {
@@ -37,4 +38,6 @@ class ItemPedido
     }
 
 
+=======
+>>>>>>> Stashed changes
 }
