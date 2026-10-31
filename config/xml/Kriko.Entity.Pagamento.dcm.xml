@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<doctrine-mapping
+    xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
+
+    <entity name="Kriko\Entity\Pagamento" table="pagamentos">
+
+        <id name="id" type="bigint" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <field name="valor" type="decimal" precision="10" scale="2"/>
+        <field name="metodo" type="string" length="20"/>
+        <field name="status" type="string" length="20"/>
+        <field name="data_criacao" column="data_criacao" type="datetime"/>
+        <field name="data_pagamento" column="data_pagamento" type="datetime" nullable="true"/>
+        <field name="referencia" type="string" length="255" nullable="true"/>
+
+        <many-to-one field="pedido" target-entity="Kriko\Entity\Pedido" inversed-by="pagamentos">
+            <join-column name="pedido" referenced-column-name="id" nullable="false"/>
+        </many-to-one>
+
+    </entity>
+</doctrine-mapping>

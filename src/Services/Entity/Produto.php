@@ -13,16 +13,13 @@ class Produto
     private string $nome;
     private ?string $descricao = null;
     private int $preco;
-    private int $estoque = 0;
-    private string $disponivel = 'T';
-    private ?\DateTime $dataCadastro = null;
+    private string $ativo = 'T';
 
     private Collection $itensPedido;
 
     public function __construct()
     {
         $this->itensPedido = new ArrayCollection();
-        $this->dataCadastro = new \DateTime();
     }
 
     // Getters
@@ -51,19 +48,9 @@ class Produto
         return $this->preco;
     }
 
-    public function getEstoque()
+    public function getAtivo()
     {
-        return $this->estoque;
-    }
-
-    public function getDisponivel()
-    {
-        return $this->disponivel;
-    }
-
-    public function getDataCadastro()
-    {
-        return $this->dataCadastro;
+        return $this->ativo;
     }
 
     // Setters
@@ -92,21 +79,9 @@ class Produto
         return $this;
     }
 
-    public function setEstoque(int $estoque)
+    public function setAtivo(string $ativo)
     {
-        $this->estoque = $estoque;
-        return $this;
-    }
-
-    public function setDisponivel(int $disponivel)
-    {
-        $this->disponivel = $disponivel;
-        return $this;
-    }
-
-    public function setDataCadastro(?DateTime $dataCadastro)
-    {
-        $this->dataCadastro = $dataCadastro;
+        $this->ativo = $ativo;
         return $this;
     }
     

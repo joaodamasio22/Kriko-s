@@ -13,8 +13,6 @@ class Pedido
     private ?Administrador $administrador = null;
     private ?\DateTime $dataPedido = null;
     private string $status = 'aberto';
-    private ?string $formaPagamento = null;
-    private string $statusPagamento = 'pendente';
     private string $valorTotal = '0.00';
     private ?string $observacao = null;
 
@@ -52,16 +50,6 @@ class Pedido
         return $this->status;
     }
 
-    public function getFormaPagamento()
-    {
-        return $this->formaPagamento;
-    }
-
-    public function getStatusPagamento()
-    {
-        return $this->statusPagamento;
-    }
-
     public function getValorTotal()
     {
         return $this->valorTotal;
@@ -94,18 +82,6 @@ class Pedido
     public function setStatus(string $status)
     {
         $this->status = $status;
-        return $this;
-    }
-
-    public function setFormaPagamento(?string $formaPagamento)
-    {
-        $this->formaPagamento = $formaPagamento;
-        return $this;
-    }
-
-    public function setStatusPagamento(string $statusPagamento)
-    {
-        $this->statusPagamento = $statusPagamento;
         return $this;
     }
 

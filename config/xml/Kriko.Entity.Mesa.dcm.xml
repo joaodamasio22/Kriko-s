@@ -1,0 +1,17 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Kriko\Entity\Mesa" table="mesas">
+        <id name="id" type="integer">
+            <generator strategy="AUTO" />
+        </id>
+
+        <field name="numero_mesa" type="integer" column="numero_mesa" />
+        <field name="descricao" type="string" column="descricao" />
+        <field name="ativo" type="string" column="ativo" length="1" />
+
+        <one-to-many field="pedidos" target-entity="Kriko\Entity\Pedido" mapped-by="mesa"/>
+        
+    </entity>
+</doctrine-mapping>

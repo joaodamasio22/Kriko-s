@@ -1,0 +1,22 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Kriko\Entity\ItemPedido" table="itens_pedido">
+        <id name="id" type="integer">
+            <generator strategy="AUTO" />
+        </id>
+
+        <field name="quantidade" type="integer" column="quantidade" />
+        <field name="preco_unitario" type="decimal" column="preco_unitario" precision="10" scale="2" />
+
+        <many-to-one field="pedido" target-entity="Kriko\Entity\Pedido" inversed-by="itens">
+            <join-column name="id_pedido" referenced-column-name="id_pedido" nullable="false"/>
+        </many-to-one>
+
+        <many-to-one field="produto" target-entity="Kriko\Entity\Produto" inversed-by="itensPedido">
+            <join-column name="id_produto" referenced-column-name="id_produto" nullable="false"/>
+        </many-to-one>
+        
+    </entity>
+</doctrine-mapping>

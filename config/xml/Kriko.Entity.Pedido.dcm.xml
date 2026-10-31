@@ -1,0 +1,32 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Kriko\Entity\Pedido" table="pedidos">
+        <id name="id" type="integer">
+            <generator strategy="AUTO" />
+        </id>
+
+        <field name="data_pedido" type="datetime" />
+        <field name="status" type="string" length="20" />
+        <field name="valor_total" type="decimal" precision="10" scale="2" />
+        <field name="observacao" type="text" />
+
+        <many-to-one field="mesa" target-entity="Kriko\Entity\Mesa" inversed-by="pedidos">
+            <join-column name="id_mesa" referenced-column-name="id_mesa" nullable="false"/>
+        </many-to-one>
+
+        <many-to-one field="administrador" target-entity="Kriko\Entity\Administrador" inversed-by="pedidos">
+            <join-column name="id_admin" referenced-column-name="id_admin" nullable="false"/>
+        </many-to-one>
+
+        <one-to-many field="itens" target-entity="Kriko\Entity\ItemPedido" mapped-by="pedido">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+        </one-to-many>
+
+        <one-to-many field="pagamentos" target-entity="Kriko\Entity\Pagamento" mapped-by="pedido"/>
+        
+    </entity>
+</doctrine-mapping>

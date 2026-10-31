@@ -8,9 +8,9 @@ use Doctrine\Common\Collections\Collection;
 class Mesa
 {
     private ?int $id = null;
-    private int $numeroMesa;
+    private int $numero_mesa;
     private ?string $descricao = null;
-    private string $ativa = 'T';
+    private string $ativo = 'T';
 
     private Collection $pedidos;
 
@@ -25,9 +25,9 @@ class Mesa
         return $this->id;
     }
 
-    public function getNumeroMesa()
+    public function getNumero_mesa()
     {
-        return $this->numeroMesa;
+        return $this->numero_mesa;
     }
 
     public function getDescricao()
@@ -35,15 +35,15 @@ class Mesa
         return $this->descricao;
     }
 
-    public function getAtiva()
+    public function getAtivo()
     {
-        return $this->ativa;
+        return $this->ativo;
     }
 
     // Setters
-    public function setNumeroMesa(int $numeroMesa)
+    public function setNumero_mesa(int $numero_mesa)
     {
-        $this->numeroMesa = $numeroMesa;
+        $this->numero_mesa = $numero_mesa;
         return $this;
     }
 
@@ -53,9 +53,9 @@ class Mesa
         return $this;
     }
 
-    public function setAtiva(string $ativa)
+    public function setAtivo(string $ativo)
     {
-        $this->ativa = $ativa;
+        $this->ativo = $ativo;
         return $this;
     }
 }
