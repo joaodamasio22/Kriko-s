@@ -12,21 +12,11 @@
         <field name="valor_total" type="decimal" precision="10" scale="2" />
         <field name="observacao" type="text" />
 
-        <many-to-one field="mesa" target-entity="Kriko\Entity\Mesa" inversed-by="pedidos">
-            <join-column name="id_mesa" referenced-column-name="id_mesa" nullable="false"/>
-        </many-to-one>
-
-        <many-to-one field="administrador" target-entity="Kriko\Entity\Administrador" inversed-by="pedidos">
-            <join-column name="id_admin" referenced-column-name="id_admin" nullable="false"/>
-        </many-to-one>
-
         <one-to-many field="itens" target-entity="Kriko\Entity\ItemPedido" mapped-by="pedido">
             <cascade>
                 <cascade-persist/>
             </cascade>
         </one-to-many>
-
-        <one-to-many field="pagamentos" target-entity="Kriko\Entity\Pagamento" mapped-by="pedido"/>
         
     </entity>
 </doctrine-mapping>

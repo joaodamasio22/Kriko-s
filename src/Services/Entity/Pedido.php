@@ -10,8 +10,8 @@ use Exception;
 class Pedido
 {
     private ?int $id = null;
-    private ?int $id_mesa = null; // Deve ser do tipo mesa
-    private ?int $id_admin = null; // Deve ser do tipo administrador
+    private ?Mesa $id_mesa = null;
+    private ?Administrador $id_admin = null;
     private ?DateTime $data_pedido = null;
     private ?string $status = 'aberto';
     private ?string $valor_total;
@@ -64,13 +64,13 @@ class Pedido
     }
 
     // Setters
-    public function setMesa(int $mesa) // Deve ser do tipo mesa
+    public function setMesa(?Mesa $mesa)
     {
         $this->id_mesa = $mesa;
         return $this;
     }
 
-    public function setAdministrador(int $administrador) // Deve ser do tipo administrador
+    public function setAdministrador(?Administrador $administrador)
     {
         $this->id_admin = $administrador;
         return $this;

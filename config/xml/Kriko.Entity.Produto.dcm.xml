@@ -16,7 +16,5 @@
             <join-column name="id_categoria" referenced-column-name="id_categoria" nullable="false"/>
         </many-to-one>
 
-        <one-to-many field="itens_Pedido" target-entity="Kriko\Entity\ItemPedido" mapped-by="produto"/>
-
     </entity>
 </doctrine-mapping>

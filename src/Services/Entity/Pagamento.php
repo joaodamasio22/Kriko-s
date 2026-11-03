@@ -7,7 +7,7 @@ use DateTime;
 class Pagamento
 {
     private ?int $id = null;
-    private ?int $pedido = null; // Deve ser do tipo Pedido
+    private ?Pedido $pedido = null;
     private int $valorTotal;
     private string $metodo;
     private string $status;
@@ -63,18 +63,16 @@ class Pagamento
         return $this;
     }
 
-    public function setPedido(int $pedido) // Deve ser do tipo Pedido
+    public function setPedido(?Pedido $pedido)
     {
         $this->pedido = $pedido;
         return $this;
     }
 
-    public function setValorTotal(int $quantidade, float $precoUnitario)
+    public function setValorTotal(float $valorTotal)
     {
-        $this->valorTotal = $quantidade * $precoUnitario;
+        $this->valorTotal = $valorTotal;
         return $this;
-        // $this->valorTotal = $valorTotal;
-        // return $this;
     }
 
     public function setMetodo(string $metodo)

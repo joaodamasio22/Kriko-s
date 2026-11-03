@@ -5,10 +5,10 @@ namespace Kriko\Entity;
 class ItemPedido
 {
     private ?int $id = null;
-    private ?int $pedido = null; // Deve ser do tipo Pedido
-    private ?int $produto = null; // Deve ser do tipo Produto
+    private ?Pedido $pedido = null;
+    private ?Produto $produto = null;
     private int $quantidade;
-    private string $precoUnitario;
+    private string $preco_unitario;
 
     // Getters
     public function getId()
@@ -33,7 +33,7 @@ class ItemPedido
 
     public function getPrecoUnitario()
     {
-        return $this->precoUnitario;
+        return $this->preco_unitario;
     }
 
     // Setters
@@ -43,15 +43,15 @@ class ItemPedido
         return $this;
     }
 
-    public function setPedido(int $pedido) // Deve ser do tipo pedido
+    public function setPedido(Pedido $pedido)
     {
-        $this->pedido = $pedido;
+        $this->pedido = $pedido->getId();
         return $this;
     }
 
-    public function setProduto(int $produto) // deve ser do tipo Produto
+    public function setProduto(Produto $produto)
     {
-        $this->produto = $produto;
+        $this->produto = $produto->getId();
         return $this;
     }
 
@@ -61,9 +61,9 @@ class ItemPedido
         return $this;
     }
 
-    public function setPrecoUnitario(string $precoUnitario)
+    public function setPrecoUnitario(string $preco_unitario)
     {
-        $this->precoUnitario = $precoUnitario;
+        $this->preco_unitario = $preco_unitario;
         return $this;
     } 
 
