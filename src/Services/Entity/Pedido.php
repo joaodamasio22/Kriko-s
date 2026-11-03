@@ -5,125 +5,168 @@ namespace Kriko\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Exception;
+use InvalidArgumentException;
 
 class Pedido
 {
     private ?int $id = null;
-    private ?Mesa $id_mesa = null;
-    private ?Administrador $id_admin = null;
+    private ?Mesa $mesa = null;
+    private ?Administrador $admin = null;
     private ?DateTime $data_pedido = null;
-    private ?string $status = 'aberto';
-    private ?string $valor_total;
-    private ?string $formaPagamento = null;
-    private ?string $statusPagamento = null;
+    private ?string $status = 'ABERTO';
+    private ?string $valor_total = '0.00';
+    private ?string $forma_pagamento = null;
+    private ?string $status_pagamento = null;
     private ?string $observacao = null;
 
-    private Collection $itens;
+    private Collection $itens_pedido;
 
     public function __construct()
     {
-        $this->itens = new ArrayCollection();
-        $this->data_pedido = new \DateTime();
+        $this->itens_pedido = new ArrayCollection();
+        $this->data_pedido = new DateTime();
     }
 
     // Getters
-    public function getId()
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getMesa()
+    public function getMesa(): ?Mesa
     {
-        return $this->id_mesa;
+        return $this->mesa;
     }
 
-    public function getAdministrador()
+    public function getAdministrador(): ?Administrador
     {
-        return $this->id_admin;
+        return $this->admin;
     }
 
-    public function getDataPedido()
+    public function getDataPedido(): ?DateTime
     {
         return $this->data_pedido;
     }
 
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    public function getValorTotal()
+    public function getValorTotal(): string
     {
         return $this->valor_total;
     }
 
-    public function getObservacao()
+    public function getFormaPagamento(): ?string
+    {
+        return $this->forma_pagamento;
+    }
+
+    public function getStatusPagamento(): ?string
+    {
+        return $this->status_pagamento;
+    }
+
+    public function getObservacao(): ?string
     {
         return $this->observacao;
     }
 
+    public function getItens(): Collection
+    {
+        return $this->itens_pedido;
+    }
+
     // Setters
-    public function setMesa(?Mesa $mesa)
+
+    public function setMesa(?Mesa $mesa): self
     {
-        $this->id_mesa = $mesa;
+        $this->mesa = $mesa;
         return $this;
     }
 
-    public function setAdministrador(?Administrador $administrador)
+    public function setAdministrador(?Administrador $administrador): self
     {
-        $this->id_admin = $administrador;
+        $this->admin = $administrador;
         return $this;
     }
 
-    public function setDataPedido(DateTime $data_pedido)
+    public function setDataPedido(DateTime $data_pedido): self
     {
         $this->data_pedido = $data_pedido;
         return $this;
     }
 
-    public function setStatus(string $status)
+    public function setStatus(string $status): self
     {
-        $opcoesValidas = ['ABERTO','EM_PREPARACAO','PRONTO','FINALIZADO','CANCELADO'];
+        $opcoesValidas = [
+            'ABERTO',
+            'EM_PREPARACAO',
+            'PRONTO',
+            'FINALIZADO',
+            'CANCELADO'
+        ];
 
-        if(!in_array(strtoupper($status), $opcoesValidas)) {
-            throw new Exception("Status inválido. Opções válidas: " . implode(", ", $opcoesValidas));
+        $status = strtoupper($status);
 
+        if (!in_array($status, $opcoesValidas, true)) {
+            throw new InvalidArgumentException(
+                "Status inválido. Opções válidas: " .
+                implode(", ", $opcoesValidas)
+            );
         }
 
         $this->status = $status;
         return $this;
     }
 
-    public function setValorTotal(int $quantidade, float $precoUnitario)
+    public function setValorTotal(float $quantidade, float $preco_unitario): self
     {
-        $this->valor_total = $quantidade * $precoUnitario;
-        return $this;
-    }
-
-    public function setFormaPagamento(string $formaPagamento)
-    {
-        $opcoesValidas = ['DINHEIRO','CARTAO','PIX'];
-        if(in_array(strtoupper($formaPagamento), $opcoesValidas)) {
-            throw new Exception("Forma de pagamento inválida. Opções válidas: " . implode(", ", $opcoesValidas));
+        if ($quantidade < 0 || $preco_unitario < 0) {
+            throw new InvalidArgumentException("Quantidade e preço unitário devem ser valores não negativos.");
         }
 
-        $this->formaPagamento = $formaPagamento;
+        $this->valor_total = number_format($quantidade * $preco_unitario, 2, '.', '');
         return $this;
     }
 
-    public function setStatusPagamento(string $statusPagamento)
+    public function setFormaPagamento(string $forma_pagamento): self
     {
-        $opcoesValidas = ['PAGO','PENDENTE','CANCELADO'];
-        if(in_array(strtoupper($statusPagamento), $opcoesValidas)) {
-            throw new Exception("Status de pagamento inválido. Opções válidas: " . implode(", ", $opcoesValidas));
+        $opcoesValidas = ['DINHEIRO', 'CARTAO', 'PIX'];
+
+        $forma_pagamento = strtoupper($forma_pagamento);
+
+        if (!in_array($forma_pagamento, $opcoesValidas, true)) {
+            throw new InvalidArgumentException(
+                "Forma de pagamento inválida. Opções válidas: " .
+                implode(", ", $opcoesValidas)
+            );
         }
 
-        $this->statusPagamento = $statusPagamento;
+        $this->forma_pagamento = $forma_pagamento;
         return $this;
     }
 
-    public function setObservacao(?string $observacao)
+    public function setStatusPagamento(string $status_pagamento): self
+    {
+        $opcoesValidas = ['PAGO', 'PENDENTE', 'CANCELADO'];
+
+        $status_pagamento = strtoupper($status_pagamento);
+
+        if (!in_array($status_pagamento, $opcoesValidas, true)) {
+            throw new InvalidArgumentException(
+                "Status de pagamento inválido. Opções válidas: " .
+                implode(", ", $opcoesValidas)
+            );
+        }
+
+        $this->status_pagamento = $status_pagamento;
+        return $this;
+    }
+
+    public function setObservacao(?string $observacao): self
     {
         $this->observacao = $observacao;
         return $this;

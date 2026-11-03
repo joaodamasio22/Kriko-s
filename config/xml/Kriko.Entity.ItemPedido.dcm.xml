@@ -5,20 +5,20 @@
 >
 
     <entity name="Kriko\Entity\ItemPedido" table="itens_pedido">
+
         <id name="id" type="integer">
             <generator strategy="AUTO" />
         </id>
 
-        <field name="quantidade" type="integer" column="quantidade" />
-        <field name="preco_unitario" type="integer" column="preco_unitario" />
+        <field name="quantidade" type="integer" />
+        <field name="preco_unitario" type="decimal" precision="10" scale="2"/>
 
-        <many-to-one field="pedido" target-entity="Kriko\Entity\Pedido" inversed-by="itens">
-            <join-column name="id_pedido" referenced-column-name="id_pedido" nullable="false"/>
+        <many-to-one field="pedido" target-entity="Kriko\Entity\Pedido" inversed-by="itens_pedido">
+            <join-column name="pedido" referenced-column-name="id" nullable="false"/>
         </many-to-one>
 
         <many-to-one field="produto" target-entity="Kriko\Entity\Produto" inversed-by="itensPedido">
-            <join-column name="id_produto" referenced-column-name="id_produto" nullable="false"/>
+            <join-column name="produto" referenced-column-name="id" nullable="false"/>
         </many-to-one>
-        
     </entity>
 </doctrine-mapping>

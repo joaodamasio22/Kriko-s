@@ -12,8 +12,8 @@
         <field name="preco" type="decimal" precision="10" scale="2" />
         <field name="ativo" type="string" length="1" />
 
-        <many-to-one field="categoria" target-entity="Kriko\Entity\Categoria" inversed-by="produtos">
-            <join-column name="id_categoria" referenced-column-name="id_categoria" nullable="false"/>
+        <many-to-one field="categoria" target-entity="Kriko\Entity\Categoria">
+            <join-column name="categoria" referenced-column-name="id" />
         </many-to-one>
 
     </entity>

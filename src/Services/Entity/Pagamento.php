@@ -8,11 +8,11 @@ class Pagamento
 {
     private ?int $id = null;
     private ?Pedido $pedido = null;
-    private int $valorTotal;
-    private string $metodo;
-    private string $status;
-    private DateTime $data_criacao;
-    private DateTime $data_pagamento;
+    private ?int $valor;
+    private ?string $metodo;
+    private ?string $status;
+    private ?DateTime $data_criacao;
+    private ?DateTime $data_pagamento;
     private ?string $referencia = null;
 
     // Getters
@@ -28,7 +28,7 @@ class Pagamento
 
     public function getValorTotal()
     {
-        return $this->valorTotal;
+        return $this->valor;
     }
 
     public function getMetodo()
@@ -69,9 +69,9 @@ class Pagamento
         return $this;
     }
 
-    public function setValorTotal(float $valorTotal)
+    public function setValorTotal(float $valor)
     {
-        $this->valorTotal = $valorTotal;
+        $this->valor = $valor;
         return $this;
     }
 
@@ -83,6 +83,12 @@ class Pagamento
 
     public function setStatus(string $status)
     {
+        $opcoesValidaes = ['PENDENTE', 'APROVADO', "RECUSADO",'CANCELADO'];
+        
+        if(!in_array($status, $opcoesValidaes)) {
+            throw new \InvalidArgumentException("Status inválido. Opções válidas: " . implode(", ", $opcoesValidaes));
+        }
+
         $this->status = $status;
         return $this;
     }
