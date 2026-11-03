@@ -1,6 +1,6 @@
 <?php
 
-require_once "vendor/autoload.php";
+require_once "bootstrap.php";
 
 use Kriko\Entity\Administrador;
 use Kriko\Entity\Categoria;
@@ -10,43 +10,42 @@ use Kriko\Entity\Pagamento;
 use Kriko\Entity\Pedido;
 use Kriko\Entity\Produto;
 
-require_once "bootstrap.php";
 
-// Categoria
-$categoria1 = new Categoria();
-$categoria1
-    ->setNome("Pastel")
-    ->setDescricao("Melhor Pastel da cidade")
-;
-echo "Categoria cadastrada com sucesso!\n";
-$entityManager->persist($categoria1);
+// // Categoria
+// $categoria1 = new Categoria();
+// $categoria1
+//     ->setNome("Pastel")
+//     ->setDescricao("Melhor Pastel da cidade")
+// ;
+// echo "Categoria cadastrada com sucesso!\n";
+// $entityManager->persist($categoria1);
 
-// Produto
-$produto1 = new Produto();
-$produto1
-->setCategoria($categoria1)
-->setNome('Pastel de Carne')
-->setDescricao('Pastel de carne com bastante recheio')
-->setPreco(1490)
-->setAtivo('S')
-;
+// // Produto
+// $produto1 = new Produto();
+// $produto1
+// ->setCategoria($categoria1)
+// ->setNome('Pastel de Carne')
+// ->setDescricao('Pastel de carne com bastante recheio')
+// ->setPreco(1490)
+// ->setAtivo('S')
+// ;
 
-echo "Produto cadastrado com sucesso!\n";
-$entityManager->persist($produto1);
-;
+// echo "Produto cadastrado com sucesso!\n";
+// $entityManager->persist($produto1);
+// ;
 
 
 // // Mesa
-$mesa1 = new Mesa();
-$mesa1
-->setNumero_mesa(1)
-->setDescricao('Mesa 1')
-->setAtivo('S')
-;
+// $mesa1 = new Mesa();
+// $mesa1
+// ->setNumero_mesa(1)
+// ->setDescricao('Mesa 1')
+// ->setAtivo('S')
+// ;
 
-echo "Mesa cadastrada com sucesso!\n";
-$entityManager->persist($mesa1);
-;
+// echo "Mesa cadastrada com sucesso!\n";
+// $entityManager->persist($mesa1);
+// ;
 
 
 // // Administrador
