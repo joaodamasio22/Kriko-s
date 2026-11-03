@@ -1,0 +1,10 @@
+# Arquivos locais de continuidade, cópias de segurança e prévias.
+.ai-context.md
+backup-original/
+preview/
+.publish-miguel/
+
+# Configurações locais e credenciais não devem ser publicadas.
+.env
+.env.*
+!.env.example

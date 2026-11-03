@@ -1,0 +1,42 @@
+/* Tema sobre Bootstrap. Layout, responsividade e interações usam o Bootstrap. */
+/* Tokens de cores aplicados aos componentes e utilitários do Bootstrap. */
+:root {
+  --bs-body-bg: #fff9ed;
+  --bs-body-color: #35251f;
+  --bs-body-font-family: Arial, Helvetica, sans-serif;
+  --bs-primary: #a82d24;
+  --bs-primary-rgb: 168, 45, 36;
+  --bs-secondary-rgb: 110, 85, 70;
+  --bs-warning-rgb: 246, 202, 104;
+  --bs-dark-rgb: 53, 37, 31;
+  --bs-light-rgb: 255, 249, 237;
+  --bs-border-color: #dfd1ba;
+  --bs-link-color-rgb: 168, 45, 36;
+  --bs-link-hover-color-rgb: 116, 27, 21;
+}
+/* Tipografia forte usando fontes do sistema, sem bibliotecas externas. */
+.display-1, .display-3, .display-4, .display-5, .brand {
+  font-family: Impact, 'Arial Narrow', 'Franklin Gothic Medium', sans-serif;
+  font-weight: 400;
+  letter-spacing: -.01em;
+  line-height: .98;
+  text-transform: uppercase;
+}
+.brand { font-size: 2.3rem; letter-spacing: -.015em; }
+.display-1 { font-size: clamp(4.5rem, 8vw, 8rem); }
+.eyebrow { font-size: .72rem; font-weight: 700; letter-spacing: .17em; text-transform: uppercase; }
+/* Estados dos botões personalizados pelas variáveis nativas do Bootstrap. */
+.btn { --bs-btn-border-radius: .2rem; font-weight: 700; }
+.btn-primary { --bs-btn-bg: #a82d24; --bs-btn-border-color: #a82d24; --bs-btn-hover-bg: #81221c; --bs-btn-hover-border-color: #81221c; --bs-btn-active-bg: #81221c; --bs-btn-active-border-color: #81221c; --bs-btn-disabled-bg: #a82d24; --bs-btn-disabled-border-color: #a82d24; }
+.btn-outline-primary { --bs-btn-color: #a82d24; --bs-btn-border-color: #a82d24; --bs-btn-hover-bg: #a82d24; --bs-btn-hover-border-color: #a82d24; --bs-btn-active-bg: #a82d24; --bs-btn-active-border-color: #a82d24; }
+.nav-link { --bs-nav-link-color: #35251f; --bs-nav-link-hover-color: #a82d24; font-size: .9rem; }
+.nav-link[aria-current='page'] { text-decoration: underline; text-underline-offset: .4em; }
+/* Enquadramento da foto e efeito discreto nos links de categoria. */
+.hero-photo { object-position: center 58%; }
+.food-link img { transition: opacity .2s; }
+.food-link:hover img { opacity: .88; }
+/* Mantém o foco visível para navegação por teclado. */
+.food-link:focus-visible { outline: 3px solid #a82d24; outline-offset: 5px; }
+.menu-item:last-child { border-bottom: 0 !important; }
+/* Respeita a preferência de acessibilidade por movimento reduzido. */
+@media (prefers-reduced-motion: reduce) { .food-link img { transition: none; } }
