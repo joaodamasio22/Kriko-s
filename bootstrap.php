@@ -16,7 +16,7 @@ $config->setProxyNamespace('Kriko\Proxies');
 
 $param = ['driver'   => 'pdo_mysql',
     'user'     => 'root',
-    'password' => '',
+    'password' => 'toor',
     'dbname'   => 'krikos_db',];
 
 $connection = DriverManager::getConnection($param, $config);

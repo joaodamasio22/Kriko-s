@@ -5,15 +5,18 @@ namespace Kriko\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Exception;
 
 class Pedido
 {
     private ?int $id = null;
-    private ?Mesa $mesa = null;
-    private ?Administrador $administrador = null;
-    private ?\DateTime $dataPedido = null;
-    private string $status = 'aberto';
-    private string $valorTotal = '0.00';
+    private ?int $id_mesa = null; // Deve ser do tipo mesa
+    private ?int $id_admin = null; // Deve ser do tipo administrador
+    private ?DateTime $data_pedido = null;
+    private ?string $status = 'aberto';
+    private ?string $valor_total;
+    private ?string $formaPagamento = null;
+    private ?string $statusPagamento = null;
     private ?string $observacao = null;
 
     private Collection $itens;
@@ -21,7 +24,7 @@ class Pedido
     public function __construct()
     {
         $this->itens = new ArrayCollection();
-        $this->dataPedido = new \DateTime();
+        $this->data_pedido = new \DateTime();
     }
 
     // Getters
@@ -32,17 +35,17 @@ class Pedido
 
     public function getMesa()
     {
-        return $this->mesa;
+        return $this->id_mesa;
     }
 
     public function getAdministrador()
     {
-        return $this->administrador;
+        return $this->id_admin;
     }
 
     public function getDataPedido()
     {
-        return $this->dataPedido;
+        return $this->data_pedido;
     }
 
     public function getStatus()
@@ -52,7 +55,7 @@ class Pedido
 
     public function getValorTotal()
     {
-        return $this->valorTotal;
+        return $this->valor_total;
     }
 
     public function getObservacao()
@@ -61,33 +64,62 @@ class Pedido
     }
 
     // Setters
-    public function setMesa(Mesa $mesa)
+    public function setMesa(int $mesa) // Deve ser do tipo mesa
     {
-        $this->mesa = $mesa;
+        $this->id_mesa = $mesa;
         return $this;
     }
 
-    public function setAdministrador(Administrador $administrador)
+    public function setAdministrador(int $administrador) // Deve ser do tipo administrador
     {
-        $this->administrador = $administrador;
+        $this->id_admin = $administrador;
         return $this;
     }
 
-    public function setDataPedido(DateTime $dataPedido)
+    public function setDataPedido(DateTime $data_pedido)
     {
-        $this->dataPedido = $dataPedido;
+        $this->data_pedido = $data_pedido;
         return $this;
     }
 
     public function setStatus(string $status)
     {
+        $opcoesValidas = ['ABERTO','EM_PREPARACAO','PRONTO','FINALIZADO','CANCELADO'];
+
+        if(!in_array(strtoupper($status), $opcoesValidas)) {
+            throw new Exception("Status inválido. Opções válidas: " . implode(", ", $opcoesValidas));
+
+        }
+
         $this->status = $status;
         return $this;
     }
 
-    public function setValorTotal(string $valorTotal)
+    public function setValorTotal(int $quantidade, float $precoUnitario)
     {
-        $this->valorTotal = $valorTotal;
+        $this->valor_total = $quantidade * $precoUnitario;
+        return $this;
+    }
+
+    public function setFormaPagamento(string $formaPagamento)
+    {
+        $opcoesValidas = ['DINHEIRO','CARTAO','PIX'];
+        if(in_array(strtoupper($formaPagamento), $opcoesValidas)) {
+            throw new Exception("Forma de pagamento inválida. Opções válidas: " . implode(", ", $opcoesValidas));
+        }
+
+        $this->formaPagamento = $formaPagamento;
+        return $this;
+    }
+
+    public function setStatusPagamento(string $statusPagamento)
+    {
+        $opcoesValidas = ['PAGO','PENDENTE','CANCELADO'];
+        if(in_array(strtoupper($statusPagamento), $opcoesValidas)) {
+            throw new Exception("Status de pagamento inválido. Opções válidas: " . implode(", ", $opcoesValidas));
+        }
+
+        $this->statusPagamento = $statusPagamento;
         return $this;
     }
 

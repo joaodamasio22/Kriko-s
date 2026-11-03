@@ -5,6 +5,7 @@ namespace Kriko\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Exception;
 
 class Administrador
 {
@@ -13,8 +14,8 @@ class Administrador
     private string $email;
     private string $senha;
     private string $perfil;
-    private string $ativo = 'T';
-    private ?\DateTime $dataCadastro = null;
+    private string $ativo = 'S';
+    private ?DateTime $dataCadastro = null;
 
     private Collection $pedidos;
 
@@ -76,6 +77,12 @@ class Administrador
 
     public function setPerfil(string $perfil)
     {
+        $opcoesValidas = ['MASTER', 'GARÇOM', 'COZINHA'];
+
+        if (!in_array($perfil, $opcoesValidas)) {
+            throw new Exception("Perfil inválido. Opções válidas: " . implode(", ", $opcoesValidas));
+        }
+
         $this->perfil = $perfil;
         return $this;
     }

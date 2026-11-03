@@ -5,8 +5,8 @@ namespace Kriko\Entity;
 class ItemPedido
 {
     private ?int $id = null;
-    private ?Pedido $pedido = null;
-    private ?Produto $produto = null;
+    private ?int $pedido = null; // Deve ser do tipo Pedido
+    private ?int $produto = null; // Deve ser do tipo Produto
     private int $quantidade;
     private string $precoUnitario;
 
@@ -43,13 +43,13 @@ class ItemPedido
         return $this;
     }
 
-    public function setPedido(Pedido $pedido)
+    public function setPedido(int $pedido) // Deve ser do tipo pedido
     {
         $this->pedido = $pedido;
         return $this;
     }
 
-    public function setProduto(Produto $produto)
+    public function setProduto(int $produto) // deve ser do tipo Produto
     {
         $this->produto = $produto;
         return $this;

@@ -9,11 +9,11 @@ use Doctrine\Common\Collections\Collection;
 class Produto
 {
     private ?int $id = null;
-    private Categoria $categoria;
+    private int $categoria; //Tem que ser tipo Categoria
     private string $nome;
     private ?string $descricao = null;
     private int $preco;
-    private string $ativo = 'T';
+    private string $ativo = 'S';
 
     private Collection $itensPedido;
 
@@ -54,9 +54,9 @@ class Produto
     }
 
     // Setters
-    public function setCategoria(Categoria $categoria)
+    public function setCategoria(int $categoria)
     {
-        $this->categoria = $categoria;
+        $this->categoria = $categoria; //Tem que ser tipo Categoria
         return $this;
     }
 

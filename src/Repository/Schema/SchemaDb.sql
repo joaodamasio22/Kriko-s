@@ -7,7 +7,7 @@ CREATE TABLE administradores (
     nome VARCHAR(250) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     senha VARCHAR(128) NOT NULL,
-    perfil ENUM('MASTER', 'ADMIN') NOT NULL DEFAULT 'ADMIN',
+    perfil ENUM('MASTER','GARÇOM', 'COZINHA') NOT NULL DEFAULT 'ADMIN',
     ativo CHAR(1) NOT NULL DEFAULT('S'),
     data_cadastro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -30,10 +30,8 @@ CREATE TABLE produtos (
     categoria BIGINT NOT NULL,
     nome VARCHAR(100) NOT NULL,
     descricao TEXT,
-    preco DECIMAL(10,2) NOT NULL,
-    estoque INT NOT NULL DEFAULT 0,
+    preco DECIMAL(10,2) NOT NULL
     ativo CHAR(1) NOT NULL DEFAULT('S'),
-    data_cadastro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT FK_PRODUTO_CATEGORIA
         FOREIGN KEY (categoria)
