@@ -1,6 +1,6 @@
 <?php
 
-namespace Kriko\Services\ListService;
+namespace Kriko\Services\ListService\Cadastrar;
 
 use Doctrine\ORM\EntityManager;
 use Exception;

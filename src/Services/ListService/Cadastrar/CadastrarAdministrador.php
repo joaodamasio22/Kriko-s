@@ -1,6 +1,6 @@
 <?php
 
-namespace Kriko\Services\ListService;
+namespace Kriko\Services\ListService\Cadastrar;
 
 use DateTime;
 use Doctrine\ORM\EntityManager;
@@ -13,7 +13,7 @@ class CadastrarAdministrador
     public function __construct(private EntityManager $entity_manager)
     { }
 
-    public function cadastrarMesa(string $nome,
+    public function cadastrarAdministrador(string $nome,
                                   string $email,
                                   string $senha,
                                   string $perfil,

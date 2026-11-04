@@ -11,44 +11,44 @@ use Kriko\Entity\Pedido;
 use Kriko\Entity\Produto;
 
 
-// // Categoria
-// $categoria1 = new Categoria();
-// $categoria1
-//     ->setNome("Pastel")
-//     ->setDescricao("Melhor Pastel da cidade")
-// ;
-// echo "Categoria cadastrada com sucesso!\n";
-// $entityManager->persist($categoria1);
+// Categoria
+$categoria1 = new Categoria();
+$categoria1
+    ->setNome("Pastel")
+    ->setDescricao("Melhor Pastel da cidade")
+;
+echo "Categoria cadastrada com sucesso!\n";
+$entityManager->persist($categoria1);
 
-// // Produto
-// $produto1 = new Produto();
-// $produto1
-// ->setCategoria($categoria1)
-// ->setNome('Pastel de Carne')
-// ->setDescricao('Pastel de carne com bastante recheio')
-// ->setPreco(1490)
-// ->setAtivo('S')
-// ;
+// Produto
+$produto1 = new Produto();
+$produto1
+->setCategoria($categoria1)
+->setNome('Pastel de Carne')
+->setDescricao('Pastel de carne com bastante recheio')
+->setPreco(1490)
+->setAtivo('S')
+;
 
-// echo "Produto cadastrado com sucesso!\n";
-// $entityManager->persist($produto1);
-// ;
-
-
-// // Mesa
-// $mesa1 = new Mesa();
-// $mesa1
-// ->setNumero_mesa(1)
-// ->setDescricao('Mesa 1')
-// ->setAtivo('S')
-// ;
-
-// echo "Mesa cadastrada com sucesso!\n";
-// $entityManager->persist($mesa1);
-// ;
+echo "Produto cadastrado com sucesso!\n";
+$entityManager->persist($produto1);
+;
 
 
-// // Administrador
+// Mesa
+$mesa1 = new Mesa();
+$mesa1
+->setNumero_mesa(1)
+->setDescricao('Mesa 1')
+->setAtivo('S')
+;
+
+echo "Mesa cadastrada com sucesso!\n";
+$entityManager->persist($mesa1);
+;
+
+
+// Administrador
 $admin = new Administrador();
 $admin
 ->setNome('Teste')
@@ -68,7 +68,6 @@ $pedido
 ->setAdministrador($admin)
 ->setStatus('ABERTO')
 ->setDataPedido(new DateTime())
-->setStatus('ABERTO')
 ;
 
 echo "Pedido cadastrado com sucesso!\n";
@@ -88,11 +87,11 @@ $entityManager->persist($itemPedido);
 
 // DEBUGGAR TUDO ABAIXO
 $pedido
-->setValorTotal($itemPedido->getQuantidade(), $itemPedido->getPrecoUnitario())
-->setFormaPagamento('DINHEIRO')
-->setStatusPagamento('PENDENTE')
-->setStatus('EM_PREPARACAO')
-->setObservacao('Sem azeitona')
+    ->setValorTotal($itemPedido->getQuantidade(), $itemPedido->getPrecoUnitario())
+    ->setFormaPagamento('DINHEIRO')
+    ->setStatusPagamento('PENDENTE')
+    ->setStatus('EM_PREPARACAO')
+    ->setObservacao('Sem azeitona')
 ;
 
 echo "Pedido atualizado com sucesso!\n";
