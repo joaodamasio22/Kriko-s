@@ -3,8 +3,8 @@
 namespace Kriko\Services\ListService\Cadastrar;
 
 use Doctrine\ORM\EntityManager;
-use Exception;
 use Kriko\Chain\Handler;
+use Kriko\DTO\OperacaoDTO;
 use Kriko\Entity\Categoria;
 
 class CadastrarCategoria extends Handler
@@ -12,32 +12,18 @@ class CadastrarCategoria extends Handler
     public function __construct(private EntityManager $entityManager)
     { }
 
-    public function processar(?array $dados = null): bool
+    public function executar(OperacaoDTO $dto): void
     {
-        $conn = $this->entityManager->getConnection();
-        $conn->beginTransaction();
+        $categoria = new Categoria();
 
-        try{
-            $categoria = new Categoria();
-            $categoria
-                ->setNome($dados['nome'])
-                ->setDescricao($dados['descricao'])
-            ;
+        $categoria
+            ->setNome($dto->obter('nome'))
+            ->setDescricao($dto->obter('descricao'))
+        ;
 
-            $this->entityManager->persist($categoria);
-            $this->entityManager->flush();
+        $this->entityManager->persist($categoria);
 
+        $dto->categoria = $categoria;
 
-            echo "Categoria cadastrada com sucesso!\n";
-
-            // throw new Exception("Testando Rollback\n");
-            $conn->commit();
-
-        } catch (\Exception $e) {
-            $conn->rollBack();
-            throw $e;
-        }
-
-        return parent::processar($dados);
     }
 }

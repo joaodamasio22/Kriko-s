@@ -3,75 +3,60 @@
 namespace Kriko\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Kriko\Entity\Administrador;
-use Kriko\Entity\Categoria;
-use Kriko\Entity\ItemPedido;
-use Kriko\Entity\Mesa;
-use Kriko\Entity\Pagamento;
-use Kriko\Entity\Pedido;
-use Kriko\Entity\Produto;
-use Kriko\Services\ListService\Atualizar\AtualizarPedido;
-use Kriko\Services\ListService\Atualizar\PagamentoAprovado;
-use Kriko\Services\ListService\Cadastrar\CadastrarAdministrador;
-use Kriko\Services\ListService\Cadastrar\CadastrarCategoria;
-use Kriko\Services\ListService\Cadastrar\CadastrarItemPedido;
-use Kriko\Services\ListService\Cadastrar\CadastrarMesa;
-use Kriko\Services\ListService\Cadastrar\CadastrarPagamento;
-use Kriko\Services\ListService\Cadastrar\CadastrarPedido;
-use Kriko\Services\ListService\Cadastrar\CadastrarProduto;
+use Kriko\Services\Control\ChainControl;
+use Kriko\DTO\OperacaoDTO;
 
 class UserControl
 {
+    private ChainControl $chainControl;
+
     public function __construct(private EntityManager $entityManager)
-    { }
-
-    public function index()
     {
-        // VERIFICAÇÃO PARA QUAL METODO IRÁ EXECUTAR
+        $this->chainControl = new ChainControl($this->entityManager);
     }
 
-    public function categoria(?array $dados = null)
+    public function categoria(array $dados): OperacaoDTO
     {
-        (new CadastrarCategoria($this->entityManager))->processar($dados);        
+        return $this->chainControl->categoria($dados);
     }
 
-    public function produto(Categoria $categoria, string $nome, string $descricao, int $precoUnitario, string $ativo)
+    public function produto(array $dados): OperacaoDTO
     {
-        (new CadastrarProduto($this->entityManager))->cadastrarProduto($categoria, $nome, $descricao, $precoUnitario, $ativo);
+        return $this->chainControl->produto($dados);
     }
 
-    public function mesa(int $numeroMesa, string $descricao, string $ativo)
+    public function mesa(array $dados): OperacaoDTO
     {
-        (new CadastrarMesa($this->entityManager))->cadastrarMesa($numeroMesa, $descricao, $ativo);
+        return $this->chainControl->mesa($dados);
     }
 
-    public function administrador(?array $dados = null)
+    public function administrador(array $dados): OperacaoDTO
     {
-        (new CadastrarAdministrador($this->entityManager))->processar($dados);
+        return $this->chainControl->administrador($dados);
     }
 
-    public function pedido(Mesa $mesa, Administrador $admin, string $status)
+    public function pedido(array $dados): OperacaoDTO
     {
-        (new CadastrarPedido($this->entityManager))->cadastrarPedido($mesa, $admin, $status);
+        return $this->chainControl->pedido($dados);
     }
 
-    public function itemPedido(Pedido $pedido, Produto $produto, int $quantidade, int $precoUnitario)
+    public function itemPedido(array $dados): OperacaoDTO
     {
-        (new CadastrarItemPedido($this->entityManager))->cadastrarItemPedido($pedido, $produto, $quantidade, $precoUnitario);
+        return $this->chainControl->itemPedido($dados);
     }
 
-    public function atualizarPedido(Pedido $pedido_id, int $quantidade, int $precoUnitario, string $forma_pagamento, string $status_pagamento, string $status, string $observacao)
+    public function atualizarPedido(array $dados): OperacaoDTO
     {
-        (new AtualizarPedido($this->entityManager))->atualizarPedido($pedido_id, $quantidade, $precoUnitario, $forma_pagamento, $status_pagamento, $status, $observacao);
+        return $this->chainControl->atualizarPedido($dados);
     }
 
-    public function pagamento(Pedido $pedido, string $metodo, string $status)
+    public function pagamento(array $dados): OperacaoDTO
     {
-        (new CadastrarPagamento($this->entityManager))->cadastrarPagamento($pedido, $metodo, $status);
+        return $this->chainControl->pagamento($dados);
     }
 
-    public function pagamentoAprovado(Pagamento $pagamento_id, string $status, string $referencia)
+    public function pagamentoAprovado(array $dados): OperacaoDTO
     {
-        (new PagamentoAprovado($this->entityManager))->pagamentoAprovado($pagamento_id, $status, $referencia);
+        return $this->chainControl->pagamentoAprovado($dados);
     }
 }

@@ -3,40 +3,27 @@
 namespace Kriko\Services\ListService\Cadastrar;
 
 use Doctrine\ORM\EntityManager;
-use Exception;
-use Kriko\Entity\Categoria;
+use Kriko\Chain\Handler;
+use Kriko\DTO\OperacaoDTO;
 use Kriko\Entity\Produto;
 
-class CadastrarProduto {
-    public function __construct(private EntityManager $entity_manager)
+class CadastrarProduto extends Handler
+{
+    public function __construct(private EntityManager $entityManager)
     { }
 
-    public function cadastrarProduto(Categoria $categoria, string $nome, string $descricao, int $preco, string $ativo)
+    protected function executar(OperacaoDTO $dto): void
     {
-        $conn = $this->entity_manager->getConnection();
-        $conn->beginTransaction();
+        $produto = new Produto();
 
-        try{
-            $produto = new Produto();
-            $produto
-                ->setCategoria($categoria)
-                ->setNome($nome)
-                ->setDescricao($descricao)
-                ->setPreco($preco)
-                ->setAtivo($ativo)
-            ;
+        $produto->setCategoria($dto->categoria);
+        $produto->setNome($dto->obter('nome'));
+        $produto->setDescricao($dto->obter('descricao'));
+        $produto->setPreco($dto->obter('preco'));
+        $produto->setAtivo($dto->obter('ativo', '1'));
 
-            $this->entity_manager->persist($produto);
-            $this->entity_manager->flush();
+        $this->entityManager->persist($produto);
 
-            echo "Produto cadastrado com sucesso!\n";
-
-            $conn->commit();
-
-        } catch (Exception $e) {
-            echo "Erro ao cadastrar produto: " . $e->getMessage() . "\n";
-            $conn->rollBack();
-
-        }
+        $dto->produto = $produto;
     }
 }

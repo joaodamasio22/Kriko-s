@@ -1,7 +1,7 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
-    https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+            https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd"
 >
 
     <entity name="Kriko\Entity\Pagamento" table="pagamentos">
@@ -9,12 +9,12 @@ xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
             <generator strategy="AUTO" />
         </id>
 
-        <field name="valor" type="decimal" precision="10" scale="2" column="valor" />
-        <field name="metodo" type="string" column="metodo" />
-        <field name="status" type="string" column="status" />
-        <field name="data_criacao" type="datetime" column="data_criacao" />
-        <field name="data_pagamento" type="datetime" column="data_pagamento" />
-        <field name="referencia" type="string" column="referencia" length="255" />
+        <field name="valor" column="valor" type="integer" />
+        <field name="metodo" column="metodo" type="string" />
+        <field name="status" column="status" type="string" />
+        <field name="data_criacao" column="data_criacao" type="datetime" />
+        <field name="data_pagamento" column="data_pagamento" type="datetime" />
+        <field name="referencia" column="referencia" type="string" length="255" />
 
         <many-to-one field="pedido" target-entity="Kriko\Entity\Pedido">
             <join-column name="pedido" referenced-column-name="id" />
