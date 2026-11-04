@@ -2,24 +2,29 @@
 
 namespace Kriko\Chain;
 
+use Kriko\DTO\OperacaoDTO;
+
 abstract class Handler
 {
     protected ?Handler $proximo = null;
 
-    public function setProximo(Handler $proximo): Handler
+    public function setProximo(Handler $handler): Handler
     {
-        $this->proximo = $proximo;
+        $this->proximo = $handler;
 
-        return $proximo;
+        return $handler;
     }
 
-    public function processar(?array $dados = null): bool
+    public function processar(OperacaoDTO $dto): OperacaoDTO
     {
-        if(!$this->proximo){
-            return true;
+        $this->executar($dto);
 
+        if ($this->proximo !== null) {
+            return $this->proximo->processar($dto);
         }
 
-        return $this->proximo->processar($dados);
+        return $dto;
     }
+
+    abstract protected function executar(OperacaoDTO $dto): void;
 }

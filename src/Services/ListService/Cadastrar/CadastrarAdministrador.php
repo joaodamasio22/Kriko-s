@@ -5,20 +5,16 @@ namespace Kriko\Services\ListService\Cadastrar;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Exception;
+use Kriko\Chain\Handler;
 use Kriko\Entity\Administrador;
 use Kriko\Entity\Mesa;
 
-class CadastrarAdministrador
+class CadastrarAdministrador extends Handler
 {
     public function __construct(private EntityManager $entity_manager)
     { }
 
-    public function cadastrarAdministrador(string $nome,
-                                  string $email,
-                                  string $senha,
-                                  string $perfil,
-                                  string $ativo
-                                )
+    public function processar(?array $dados = null): bool
                                 
     {
         $conn = $this->entity_manager->getConnection();
@@ -27,11 +23,11 @@ class CadastrarAdministrador
         try{
             $admin = new Administrador();
             $admin
-                ->setNome($nome)
-                ->setEmail($email)
-                ->setSenha($senha)
-                ->setPerfil($perfil)
-                ->setAtivo($ativo)
+                ->setNome($dados['nomeAdm'])
+                ->setEmail($dados['emailAdm'])
+                ->setSenha($dados['senhaAdm'])
+                ->setPerfil($dados['perfilAdm'])
+                ->setAtivo($dados['ativoAdm'])
                 ->setDataCadastro(new DateTime())
             ;
 
@@ -45,5 +41,7 @@ class CadastrarAdministrador
             $conn->rollBack();
 
         }
+
+        return parent::processar($dados);
     }
 }

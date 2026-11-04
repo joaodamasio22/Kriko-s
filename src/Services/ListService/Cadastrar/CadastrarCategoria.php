@@ -4,14 +4,15 @@ namespace Kriko\Services\ListService\Cadastrar;
 
 use Doctrine\ORM\EntityManager;
 use Exception;
+use Kriko\Chain\Handler;
 use Kriko\Entity\Categoria;
 
-class CadastrarCategoria
+class CadastrarCategoria extends Handler
 {
     public function __construct(private EntityManager $entityManager)
     { }
 
-    public function cadastrarCategoria(string $nome, string $descricao)
+    public function processar(?array $dados = null): bool
     {
         $conn = $this->entityManager->getConnection();
         $conn->beginTransaction();
@@ -19,14 +20,14 @@ class CadastrarCategoria
         try{
             $categoria = new Categoria();
             $categoria
-                ->setNome($nome)
-                ->setDescricao($descricao)
+                ->setNome($dados['nome'])
+                ->setDescricao($dados['descricao'])
             ;
 
             $this->entityManager->persist($categoria);
             $this->entityManager->flush();
 
-            
+
             echo "Categoria cadastrada com sucesso!\n";
 
             // throw new Exception("Testando Rollback\n");
@@ -36,5 +37,7 @@ class CadastrarCategoria
             $conn->rollBack();
             throw $e;
         }
+
+        return parent::processar($dados);
     }
 }

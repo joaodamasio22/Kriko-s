@@ -30,10 +30,9 @@ class UserControl
         // VERIFICAÇÃO PARA QUAL METODO IRÁ EXECUTAR
     }
 
-    public function categoria(string $nome, string $descricao)
+    public function categoria(?array $dados = null)
     {
-        (new CadastrarCategoria($this->entityManager))->cadastrarCategoria($nome, $descricao);
-        
+        (new CadastrarCategoria($this->entityManager))->processar($dados);        
     }
 
     public function produto(Categoria $categoria, string $nome, string $descricao, int $precoUnitario, string $ativo)
@@ -46,9 +45,9 @@ class UserControl
         (new CadastrarMesa($this->entityManager))->cadastrarMesa($numeroMesa, $descricao, $ativo);
     }
 
-    public function administrador(string $nome, string $email, string $senha, string $perfil, string $ativo)
+    public function administrador(?array $dados = null)
     {
-        (new CadastrarAdministrador($this->entityManager))->cadastrarAdministrador($nome, $email, $senha, $perfil, $ativo);
+        (new CadastrarAdministrador($this->entityManager))->processar($dados);
     }
 
     public function pedido(Mesa $mesa, Administrador $admin, string $status)
