@@ -3,38 +3,25 @@
 namespace Kriko\Services\ListService\Cadastrar;
 
 use Doctrine\ORM\EntityManager;
-use Exception;
+use Kriko\Chain\Handler;
+use Kriko\DTO\OperacaoDTO;
 use Kriko\Entity\Mesa;
 
-class CadastrarMesa
+class CadastrarMesa extends Handler
 {
-    public function __construct(private EntityManager $entity_manager)
+    public function __construct(private EntityManager $entityManager)
     { }
 
-    public function cadastrarMesa(int $numero_mesa, string $descricao, string $ativo)
+    public function executar(OperacaoDTO $dto): void
     {
-        $conn = $this->entity_manager->getConnection();
-        $conn->beginTransaction();
+        $mesa = new Mesa();
+        $mesa
+            ->setNumero_mesa($dto->obter('numeroMesa'))
+            ->setDescricao($dto->obter('descricao'))
+            ->setAtivo($dto->obter('ativo'))
+        ;
 
-        try{
-            $mesa = new Mesa();
-            $mesa
-                ->setNumero_mesa($numero_mesa)
-                ->setDescricao($descricao)
-                ->setAtivo($ativo)
-            ;
-
-            $this->entity_manager->persist($mesa);
-            $this->entity_manager->flush();
-
-            echo "Mesa cadastrada com sucesso!\n";
-
-            $conn->commit();
-
-        } catch (Exception $e) {
-            echo "Erro ao cadastrar mesa: " . $e->getMessage() . "\n";
-            $conn->rollBack();
-
-        }
+        $this->entityManager->persist($mesa);
+        $dto->mesa = $mesa;
     }
 }

@@ -72,12 +72,6 @@ class ItemPedido
 
     public function setPrecoUnitario(string $preco_unitario)
     {
-        if (!preg_match('/^\d+(\.\d{1,2})?$/', $preco_unitario)) {
-            throw new InvalidArgumentException(
-                "Preço unitário inválido."
-            );
-        }
-
         $this->preco_unitario = number_format((float) $preco_unitario, 2, '.', '');
         return $this;
     }

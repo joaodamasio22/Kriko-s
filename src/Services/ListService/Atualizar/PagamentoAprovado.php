@@ -2,41 +2,74 @@
 
 namespace Kriko\Services\ListService\Atualizar;
 
-use DateTime;
-use Doctrine\ORM\EntityManager;
-use Exception;
-use Kriko\Entity\Pagamento;
+use DateTimeImmutable;
+use DomainException;
+use InvalidArgumentException;
+use Kriko\Chain\Handler;
+use Kriko\DTO\OperacaoDTO;
 
-class PagamentoAprovado {
-    public function __construct(private EntityManager $entityManager)
-    { }
-
-    public function pagamentoAprovado(Pagamento $pagamento_id, string $status, string $referencia)
+class PagamentoAprovado extends Handler
+{
+    protected function executar(OperacaoDTO $dto): void
     {
-        $conn = $this->entityManager->getConnection();
-        $conn->beginTransaction();
+        $pagamento = $dto->pagamento;
 
-        try{
-            $pagamento = $this->entityManager->getRepository(Pagamento::class)->findOneBy(['id' => $pagamento_id]);
+        if ($pagamento === null) {
+            throw new DomainException('Nenhum pagamento foi carregado.');
+        }
 
-            $pagamento
-                ->setStatus($status)
-                ->setDataPagamento(new DateTime())
-                ->setReferencia($referencia)
-            ;
+        if ($pagamento->getStatus() !== 'PENDENTE') {
+            throw new DomainException('Somente pagamentos pendentes podem ser aprovados.');
+        }
 
-            echo "Pagamento realizado com sucesso!\n";
-            
-            $this->entityManager->persist($pagamento);
-            $this->entityManager->flush();
-            
-            // throw new Exception("Erro ao cadastrar item do pedido");
-            $conn->commit();
+        $referencia = $dto->obter('referencia');
 
-        } catch (Exception $e) {
-            $conn->rollBack();
-            throw $e;
+        if (!is_string($referencia) || trim($referencia) === '' || mb_strlen($referencia) > 255) {
+            throw new InvalidArgumentException('Referência de pagamento inválida.');
+        }
 
+        $pedido = $pagamento->getPedido();
+
+        if ($pedido === null) {
+            throw new DomainException('Pagamento para pedido não existente.');
+        }
+
+        if ($pedido->getStatus() === 'CANCELADO') {
+            throw new DomainException('Não é permitido aprovar pagamento de um pedido cancelado.');
+        }
+
+        $pagamento->setStatus('APROVADO');
+
+        $pagamento->setReferencia(
+            trim($referencia)
+        );
+
+        $pagamento->setDataPagamento(new DateTimeImmutable());
+
+        $this->atualizarStatusPedido(
+            $pagamento,
+            $pedido
+        );
+    }
+
+    private function atualizarStatusPedido(
+        object $pagamento,
+        object $pedido
+    ): void {
+
+        $totalPedido = $pedido->getValorTotal();
+
+        $totalAprovado = 0;
+
+        foreach ($pedido->getPagamentos() as $item) {
+
+            if ($item->getStatus() === 'APROVADO') {
+                $totalAprovado += $item->getValor();
+            }
+        }
+
+        if ($totalAprovado >= $totalPedido) {
+            $pedido->setStatusPagamento('PAGO');
         }
     }
 }

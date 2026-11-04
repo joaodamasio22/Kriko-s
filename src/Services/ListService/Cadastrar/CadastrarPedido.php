@@ -4,38 +4,27 @@ namespace Kriko\Services\ListService\Cadastrar;
 
 use DateTime;
 use Doctrine\ORM\EntityManager;
-use Exception;
-use Kriko\Entity\Administrador;
-use Kriko\Entity\Mesa;
+use Kriko\Chain\Handler;
+use Kriko\DTO\OperacaoDTO;
 use Kriko\Entity\Pedido;
 
-class CadastrarPedido {
+class CadastrarPedido extends Handler {
     public function __construct(private EntityManager $entityManager)
     { }
 
-    public function cadastrarPedido(Mesa $mesa, Administrador $admin, string $status)
-    {        
-        $conn = $this->entityManager->getConnection();
-        $conn->beginTransaction();
+    public function executar(OperacaoDTO $dto): void
+    {
+        $pedido = new Pedido();
+        $pedido
+            ->setMesa($dto->obter('pedido'))
+            ->setAdministrador($dto->obter('administrador'))
+            ->setDataPedido((new DateTime()))
+            ->setStatus($dto->obter('status'))
+        ;
 
-        try{
-            $pedido = new Pedido();
-            $pedido
-                ->setMesa($mesa)
-                ->setAdministrador($admin)
-                ->setStatus($status)
-                ->setDataPedido(new DateTime())
-            ;
-            $this->entityManager->persist($pedido);
-            $this->entityManager->flush();
-            
-            echo "Pedido cadastrado com sucesso!\n";
-            $conn->commit();
+        $this->entityManager->persist($pedido);
 
-        } catch (Exception $e) {
-            $conn->rollBack();
-            throw $e;
+        $dto->pedido = $pedido;
 
-        }
     }
 }

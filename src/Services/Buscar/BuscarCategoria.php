@@ -10,19 +10,24 @@ use Exception;
 
 class BuscarCategoria extends Handler
 {
-    public function __construct(private EntityManager $entityManager)
+    public function __construct(private readonly EntityManager $entityManager)
     { }
 
     protected function executar(OperacaoDTO $dto): void
     {
-        $categoriaId = $dto->obter('categoria_id');
+        $id = filter_var($dto->obter('categoria_id'), FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1],
+        ]);
 
-        $categoria = $this->entityManager->find(Categoria::class, $categoriaId);
-
-        if ($categoria === null) {
-            throw new Exception('Categoria não encontrada.');
+        if ($id === false) {
+            throw new Exception('Identificador categoria_id inválido.');
         }
 
-        $dto->categoria = $categoria;
+        $entidade = $this->entityManager->find(Categoria::class, $id);
+        if ($entidade === null) {
+            throw new Exception('Categoria não encontrado(a).');
+        }
+
+        $dto->categoria = $entidade;
     }
 }

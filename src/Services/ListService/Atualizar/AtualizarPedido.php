@@ -2,41 +2,90 @@
 
 namespace Kriko\Services\ListService\Atualizar;
 
-use Doctrine\ORM\EntityManager;
+use Kriko\Chain\Handler;
+use Kriko\DTO\OperacaoDTO;
 use Exception;
-use Kriko\Entity\Pedido;
 
-class AtualizarPedido {
-    public function __construct(private EntityManager $entityManager)
-    { }
+final class AtualizarPedido extends Handler
+{
+    private array $status_permitido = [
+            'PENDENTE',
+            'EM_PREPARACAO',
+            'PRONTO',
+            'FINALIZADO',
+            'CANCELADO',
+        ];
 
-    public function atualizarPedido(Pedido $pedido_id, int $quantidade, int $precoUnitario,  string $formaPagamento, string $statusPagamento, string $status, string $observacao)
+    private array $formas_pagamento = [
+            'PIX',
+            'DINHEIRO',
+            'CARTAO_CREDITO',
+            'CARTAO_DEBITO',
+        ];
+
+    private array $transicoes_status = [
+            'PENDENTE',
+            'EM_PREPARACAO',
+            'PRONTO',
+            'FINALIZADO',
+            'CANCELADO',
+        ];
+
+    protected function executar(OperacaoDTO $dto): void
     {
-        $conn = $this->entityManager->getConnection();
-        $conn->beginTransaction();
+        $pedido = $dto->pedido;
 
-        try{
-            $pedido = $this->entityManager->getRepository(Pedido::class)->findOneBy(['id' => $$pedido_id]);    
+        if ($pedido === null) {
+            throw new Exception('Nenhum pedido foi carregado.');
+        }
 
-            $pedido
-                ->setValorTotal($quantidade, $precoUnitario)
-                ->setFormaPagamento($formaPagamento)
-                ->setStatusPagamento($statusPagamento)
-                ->setStatus($status)
-                ->setObservacao($observacao)
-            ;
+        if ($dto->possui('status')) {
+            $novoStatus = $dto->obter('status');
 
-            $this->entityManager->persist($pedido);
-            $this->entityManager->flush();
+            if (!is_string($novoStatus) || !in_array($novoStatus, $this->status_permitido, true)) {
+                throw new Exception('Status do pedido inválido.');
+            }
 
-            // throw new Exception("Erro ao cadastrar item do pedido");
+            $statusAtual = $pedido->getStatus();
+ 
+                if (!in_array($novoStatus, $this->transicoes_status, true)) {
+                    throw new Exception("Não é permitido alterar o pedido ". "de {$statusAtual} para {$novoStatus}.");
+                }
 
-            $conn->commit();
+                $pedido->setStatus($novoStatus);
             
-        } catch (Exception $e) {
-            $conn->rollBack();
-            throw $e;
+        }
 
+        if ($dto->possui('forma_pagamento')) {
+
+            $formaPagamento = $dto->obter('forma_pagamento');
+
+            if (!is_string($formaPagamento) || !in_array($formaPagamento, $this->formas_pagamento, true)) {
+                throw new Exception('Forma de pagamento inválida.');
+            }
+
+            if ($pedido->getStatusPagamento() !== 'PENDENTE') {
+                throw new Exception('Não é permitido alterar a forma de pagamento de um pedido já processado.');
+            }
+
+            $pedido->setFormaPagamento(
+                $formaPagamento
+            );
+        }
+
+        if ($dto->possui('observacao')) {
+
+            $observacao = $dto->obter('observacao');
+
+            if ($observacao !== null && !is_string($observacao)) {
+                throw new Exception('Observação inválida.');
+            }
+
+            if (in_array($pedido->getStatus(), ['FINALIZADO', 'CANCELADO'], true)) {
+                throw new Exception('Não é permitido alterar a observação '. 'de um pedido encerrado.');
+            }
+
+            $pedido->setObservacao($observacao);
         }
     }
 }

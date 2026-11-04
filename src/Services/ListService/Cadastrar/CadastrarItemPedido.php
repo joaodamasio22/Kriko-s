@@ -3,39 +3,25 @@
 namespace Kriko\Services\ListService\Cadastrar;
 
 use Doctrine\ORM\EntityManager;
-use Exception;
+use Kriko\Chain\Handler;
+use Kriko\DTO\OperacaoDTO;
 use Kriko\Entity\ItemPedido;
-use Kriko\Entity\Pedido;
-use Kriko\Entity\Produto;
 
-class CadastrarItemPedido {
+class CadastrarItemPedido extends Handler {
     public function __construct(private EntityManager $entityManager)
     { }
 
-    public function cadastrarItemPedido(Pedido $pedido, Produto $produto, int $quantidade, int $precoUnitario)
+    public function executar(OperacaoDTO $dto): void
     {
-        $conn = $this->entityManager->getConnection();
-        $conn->beginTransaction();
+        $itemPedido = new ItemPedido();
+        $itemPedido
+            ->setPedido($dto->obter('pedido'))
+            ->setProduto($dto->obter('produto'))
+            ->setQuantidade($dto->obter('quantidade'))
+            ->setPrecoUnitario($dto->obter('preco_unitario'))
+        ;
 
-        try{
-            $itemPedido = new ItemPedido();
-            $itemPedido
-                ->setPedido($pedido)
-                ->setProduto($produto)
-                ->setQuantidade($quantidade)
-                ->setPrecoUnitario($precoUnitario)
-            ;
-
-            $this->entityManager->persist($itemPedido);
-            $this->entityManager->flush();
-
-            // throw new Exception("Erro ao cadastrar item do pedido");
-            $conn->commit();
-
-        } catch (Exception $e) {
-            $conn->rollBack();
-            throw $e;
-
-        }
+        $this->entityManager->persist($itemPedido);
+        $dto->itemPedido = $itemPedido;
     }
 }

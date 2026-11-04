@@ -4,6 +4,7 @@ namespace Kriko\DTO;
 
 use Kriko\Entity\Administrador;
 use Kriko\Entity\Categoria;
+use Kriko\Entity\ItemPedido;
 use Kriko\Entity\Mesa;
 use Kriko\Entity\Pedido;
 use Kriko\Entity\Produto;
@@ -15,6 +16,7 @@ class OperacaoDTO
         public array $dados = [],
         public ?Administrador $administrador = null,
         public ?Categoria $categoria = null,
+        public ?ItemPedido $itemPedido = null,
         public ?Mesa $mesa = null,
         public ?Pedido $pedido = null,
         public ?Produto $produto = null,

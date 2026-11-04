@@ -4,5 +4,5 @@ use Kriko\Controller\UserControl;
 
 require_once "bootstrap.php";
 
-(new UserControl($entityManager))->index();
+(new UserControl($entityManager));
 
