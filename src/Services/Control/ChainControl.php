@@ -2,7 +2,6 @@
 
 namespace Kriko\Services\Control;
 
-use Doctrine\ORM\EntityManager;
 use Exception;
 use Throwable;
 
@@ -10,30 +9,32 @@ use Kriko\Chain\Handler;
 use Kriko\DTO\OperacaoDTO;
 use Kriko\Entity\Pagamento;
 
-use Kriko\Services\Buscar\BuscarAdministrador;
-use Kriko\Services\Buscar\BuscarCategoria;
+use Doctrine\ORM\EntityManager;
+
 use Kriko\Services\Buscar\BuscarMesa;
 use Kriko\Services\Buscar\BuscarPedido;
 use Kriko\Services\Buscar\BuscarProduto;
+use Kriko\Services\Buscar\BuscarCategoria;
+use Kriko\Services\Buscar\BuscarAdministrador;
 
-use Kriko\Services\Validar\ValidarCategoria;
-use Kriko\Services\Validar\ValidarItemPedido;
 use Kriko\Services\Validar\ValidarMesa;
-use Kriko\Services\Validar\ValidarPagamento;
 use Kriko\Services\Validar\ValidarPedido;
 use Kriko\Services\Validar\ValidarProduto;
+use Kriko\Services\Validar\ValidarCategoria;
+use Kriko\Services\Validar\ValidarPagamento;
+use Kriko\Services\Validar\ValidarItemPedido;
+use Kriko\Services\Validar\ValidarAdministrador;
 
-use Kriko\Services\ListService\Cadastrar\CadastrarAdministrador;
-use Kriko\Services\ListService\Cadastrar\CadastrarCategoria;
-use Kriko\Services\ListService\Cadastrar\CadastrarItemPedido;
-use Kriko\Services\ListService\Cadastrar\CadastrarPagamento;
-use Kriko\Services\ListService\Cadastrar\CadastrarPedido;
-use Kriko\Services\ListService\Cadastrar\CadastrarProduto;
-
+use Kriko\Services\ListService\Cadastrar\CadastrarMesa;
 use Kriko\Services\ListService\Atualizar\AtualizarPedido;
 use Kriko\Services\ListService\Atualizar\PagamentoAprovado;
-use Kriko\Services\ListService\Cadastrar\CadastrarMesa;
-use Kriko\Services\Validar\ValidarAdministrador;
+
+use Kriko\Services\ListService\Cadastrar\CadastrarPedido;
+use Kriko\Services\ListService\Cadastrar\CadastrarProduto;
+use Kriko\Services\ListService\Cadastrar\CadastrarCategoria;
+use Kriko\Services\ListService\Cadastrar\CadastrarPagamento;
+use Kriko\Services\ListService\Cadastrar\CadastrarItemPedido;
+use Kriko\Services\ListService\Cadastrar\CadastrarAdministrador;
 
 class ChainControl
 {
