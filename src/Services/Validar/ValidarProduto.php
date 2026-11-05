@@ -13,7 +13,7 @@ class ValidarProduto extends Handler {
         $descricao = $dto->obter('descricao');
         $categoria = filter_var($dto->obter('categoria_id'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         $preco = filter_var($dto->obter('preco_centavos'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        $ativo = $dto->obter('ativo', '1');
+        $ativo = $dto->obter('ativo', 'S');
 
         if ($categoria === false) {
             throw new Exception('Categoria inválida.');
@@ -27,11 +27,7 @@ class ValidarProduto extends Handler {
             throw new Exception('Descrição do produto inválida.');
         }
 
-        if ($preco === false || $preco > 9999999999) {
-            throw new Exception('Preço em centavos inválido.');
-        }
-
-        if (!in_array($ativo, ['0', '1', 0, 1, false, true], true)) {
+        if (!in_array($ativo, ['N', 'S'], true)) {
             throw new Exception('Campo ativo inválido.');
         }
     }

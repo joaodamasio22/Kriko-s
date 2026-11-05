@@ -19,6 +19,9 @@ $param = ['driver'   => 'pdo_mysql',
     'password' => 'toor',
     'dbname'   => 'krikos_db',];
 
+
+$config->enableNativeLazyObjects(true);
+
 $connection = DriverManager::getConnection($param, $config);
 
 $entityManager = new EntityManager($connection, $config);

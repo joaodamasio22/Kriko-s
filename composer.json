@@ -1,7 +1,7 @@
 {
     "name": "user/kriko-s",
     "autoload": {
-        "psr-4": { "Kriko\\Entity\\": "src/Services/Entity/" }
+        "psr-4": { "Kriko\\": "src/" }
     },
     "authors": [
         {

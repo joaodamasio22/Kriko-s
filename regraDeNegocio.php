@@ -106,10 +106,10 @@ $entityManager->persist($pedido);
 $pagamento = new Pagamento();
 $pagamento
 ->setPedido($pedido)
-->setValorTotal($pedido->getValorTotal())
+->setValor($pedido->getValorTotal())
     ->setMetodo('DINHEIRO')
     ->setStatus('PENDENTE')
-    ->setDataCriacao(new DateTime())
+    ->setDataCriacao(new DateTimeImmutable())
     ;
 
 echo "Pagamento cadastrado com sucesso!\n";
@@ -118,7 +118,7 @@ $entityManager->persist($pagamento);
 
 $pagamento
 ->setStatus('APROVADO')
-->setDataPagamento(new DateTime())
+->setDataPagamento(new DateTimeImmutable())
 ->setReferencia('123456789')
 ;
 

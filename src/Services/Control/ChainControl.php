@@ -16,7 +16,6 @@ use Kriko\Services\Buscar\BuscarMesa;
 use Kriko\Services\Buscar\BuscarPedido;
 use Kriko\Services\Buscar\BuscarProduto;
 
-use Kriko\Services\Validar\ValidarAdministrador;
 use Kriko\Services\Validar\ValidarCategoria;
 use Kriko\Services\Validar\ValidarItemPedido;
 use Kriko\Services\Validar\ValidarMesa;
@@ -34,12 +33,13 @@ use Kriko\Services\ListService\Cadastrar\CadastrarProduto;
 use Kriko\Services\ListService\Atualizar\AtualizarPedido;
 use Kriko\Services\ListService\Atualizar\PagamentoAprovado;
 use Kriko\Services\ListService\Cadastrar\CadastrarMesa;
+use Kriko\Services\Validar\ValidarAdministrador;
 
-final class ChainControl
+class ChainControl
 {
     public function __construct(
         private readonly EntityManager $entityManager
-    ) {}
+    ) { }
 
     private function executar(OperacaoDTO $dto, Handler ...$handlers ): OperacaoDTO
     {

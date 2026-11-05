@@ -14,15 +14,15 @@ class ValidarMesa extends Handler
         $descricao = $dto->obter('descricao');
         $ativo = $dto->obter('ativo', '1');
 
-        if ($numero === false) {
-            throw new Exception('Número da mesa deve ser inteiro positivo.');
-        }
+        // if ($numero === false) {
+        //     throw new Exception('Número da mesa deve ser inteiro positivo.');
+        // }
 
         if ($descricao !== null && (!is_string($descricao) || mb_strlen($descricao) > 100)) {
             throw new Exception('Descrição da mesa inválida.');
         }
 
-        if (!in_array($ativo, ['0', '1', 0, 1, false, true], true)) {
+        if (!in_array($ativo, ['N', 'S'], true)) {
             throw new Exception('Campo ativo inválido.');
         }
     }
