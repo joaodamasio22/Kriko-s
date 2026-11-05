@@ -115,12 +115,12 @@ class ChainControl
     public function pedido(array $dados): OperacaoDTO
     {
         return $this->executar(
-                new OperacaoDTO($dados),
-                new ValidarPedido(),
-                new BuscarMesa($this->entityManager),
-                new BuscarAdministrador($this->entityManager),
-                new CadastrarPedido($this->entityManager)
-            );
+            new OperacaoDTO($dados),
+            new ValidarPedido(),
+            new BuscarMesa($this->entityManager),
+            new BuscarAdministrador($this->entityManager),
+            new CadastrarPedido($this->entityManager)
+        );
     }
 
     public function itemPedido(array $dados): OperacaoDTO
