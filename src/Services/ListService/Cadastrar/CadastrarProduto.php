@@ -20,7 +20,7 @@ class CadastrarProduto extends Handler
         $produto->setNome($dto->obter('nome'));
         $produto->setDescricao($dto->obter('descricao'));
         $produto->setPreco($dto->obter('preco'));
-        $produto->setAtivo($dto->obter('ativo', '1'));
+        $produto->setAtivo($dto->obter('ativo'));
 
         $this->entityManager->persist($produto);
 

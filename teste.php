@@ -12,6 +12,7 @@ $dadosCategoria = [
 
 (new CriandoProdutos($entityManager))->criarCategoria($dadosCategoria);
 
+
 // Mesa
 $dadosMesa = [
     'numeroMesa' => 1,

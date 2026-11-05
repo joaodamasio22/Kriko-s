@@ -15,8 +15,8 @@ class CadastrarItemPedido extends Handler {
     {
         $itemPedido = new ItemPedido();
         $itemPedido
-            ->setPedido($dto->obter('pedido'))
-            ->setProduto($dto->obter('produto'))
+            ->setPedido($dto->pedido)
+            ->setProduto($dto->produto)
             ->setQuantidade($dto->obter('quantidade'))
             ->setPrecoUnitario($dto->obter('preco_unitario'))
         ;

@@ -5,7 +5,7 @@ namespace Kriko\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use InvalidArgumentException;
+use Exception;
 
 class Pedido
 {
@@ -14,7 +14,7 @@ class Pedido
     private ?Administrador $admin = null;
     private ?DateTime $data_pedido = null;
     private ?string $status = 'ABERTO';
-    private ?string $valor_total = '0.00';
+    private ?int $valor_total = null;
     private ?string $forma_pagamento = null;
     private ?string $status_pagamento = null;
     private ?string $observacao = null;
@@ -111,11 +111,7 @@ class Pedido
 
         $status = strtoupper($status);
 
-        if (!in_array($status, $opcoesValidas, true)) {
-            throw new InvalidArgumentException(
-                "Status inválido. Opções válidas: " .
-                implode(", ", $opcoesValidas)
-            );
+        if (!in_array($status, $opcoesValidas, true)) { throw new Exception( "Status inválido. Opções válidas: " . implode(", ", $opcoesValidas));
         }
 
         $this->status = $status;
@@ -125,7 +121,7 @@ class Pedido
     public function setValorTotal(float $quantidade, float $preco_unitario): self
     {
         if ($quantidade < 0 || $preco_unitario < 0) {
-            throw new InvalidArgumentException("Quantidade e preço unitário devem ser valores não negativos.");
+            throw new Exception("Quantidade e preço unitário devem ser valores não negativos.");
         }
 
         $this->valor_total = number_format($quantidade * $preco_unitario, 2, '.', '');
@@ -139,7 +135,7 @@ class Pedido
         $forma_pagamento = strtoupper($forma_pagamento);
 
         if (!in_array($forma_pagamento, $opcoesValidas, true)) {
-            throw new InvalidArgumentException(
+            throw new Exception(
                 "Forma de pagamento inválida. Opções válidas: " .
                 implode(", ", $opcoesValidas)
             );
@@ -156,7 +152,7 @@ class Pedido
         $status_pagamento = strtoupper($status_pagamento);
 
         if (!in_array($status_pagamento, $opcoesValidas, true)) {
-            throw new InvalidArgumentException(
+            throw new Exception(
                 "Status de pagamento inválido. Opções válidas: " .
                 implode(", ", $opcoesValidas)
             );

@@ -59,6 +59,7 @@ $admin
 ->setDataCadastro(new DateTime())
 ;
 
+
 echo "Administrador cadastrado com sucesso!\n";
 $entityManager->persist($admin);
 

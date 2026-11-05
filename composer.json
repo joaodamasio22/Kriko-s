@@ -12,6 +12,7 @@
     "require": {
         "doctrine/orm": "^3",
         "doctrine/dbal": "^4",
-        "symfony/cache": "^7"
+        "symfony/cache": "^7",
+        "doctrine/collections": "^3.1"
     }
 }

@@ -16,8 +16,8 @@ class CadastrarPedido extends Handler {
     {
         $pedido = new Pedido();
         $pedido
-            ->setMesa($dto->obter('pedido'))
-            ->setAdministrador($dto->obter('administrador'))
+            ->setMesa($dto->mesa)
+            ->setAdministrador($dto->administrador)
             ->setDataPedido((new DateTime()))
             ->setStatus($dto->obter('status'))
         ;
