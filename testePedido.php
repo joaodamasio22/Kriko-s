@@ -26,16 +26,16 @@ $dados = [
         [
         'pedido_id' => 1,
         'produto_id' => 1,
-        'quantidade' => 4,
+        'quantidade' => 5,
         'preco_unitario' => 1500,
         ],
 
-        [
-        'pedido_id' => 1,
-        'produto_id' => 2,
-        'quantidade' => 2,
-        'preco_unitario' => 3000,
-        ]
+        // [
+        // 'pedido_id' => 1,
+        // 'produto_id' => 2,
+        // 'quantidade' => 2,
+        // 'preco_unitario' => 3000,
+        // ]
     ],
 ];
 

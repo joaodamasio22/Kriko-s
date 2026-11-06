@@ -22,6 +22,7 @@ public function __construct(private EntityManager $entityManager)
             ->setMetodo($dto->pedido->getFormaPagamento())
             ->setStatus($dto->obter('status'))
             ->setDataCriacao((new DateTime()))
+            ->setReferencia($dto->obter('referencia'))
         ;
 
         $this->entityManager->persist($pagamento);

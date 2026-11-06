@@ -4,22 +4,22 @@ use Kriko\Services\CriandoProdutos\CriandoProdutos;
 
 require_once 'bootstrap.php';
 
-// Categoria
-$dadosCategoria = [
-    'nome' => 'Pastel',
-    'descricao' => 'Melhor pastel da Cidade'
-];
+// // Categoria
+// $dadosCategoria = [
+//     'nome' => 'Pastel',
+//     'descricao' => 'Melhor pastel da Cidade'
+// ];
 
-(new CriandoProdutos($entityManager))->criarCategoria($dadosCategoria);
+// (new CriandoProdutos($entityManager))->criarCategoria($dadosCategoria);
 
-// Mesa
-$dadosMesa = [
-    'numeroMesa' => 2,
-    'descricao' => 'Próximo a Entrada',
-    'ativo' => 'N'
-];
+// // Mesa
+// $dadosMesa = [
+//     'numeroMesa' => 2,
+//     'descricao' => 'Próximo a Entrada',
+//     'ativo' => 'N'
+// ];
 
-(new CriandoProdutos($entityManager))->criarMesa($dadosMesa);
+// (new CriandoProdutos($entityManager))->criarMesa($dadosMesa);
 
 // Administrador
 $dadosAdministrador = [
@@ -32,15 +32,15 @@ $dadosAdministrador = [
 
 (new CriandoProdutos($entityManager))->criarAdministrador($dadosAdministrador);
 
-// Produto
-$dadosProduto = [
-    'categoria_id' => 2,
-    'nome' => 'Carne com Queijo',
-    'descricao' => 'Acompanha caldo de Cana',
-    'preco' => 3500,
-    'ativo' => 'S'
-    ];
+// // Produto
+// $dadosProduto = [
+//     'categoria_id' => 1,
+//     'nome' => 'Carne com Queijo',
+//     'descricao' => 'Acompanha caldo de Cana',
+//     'preco' => 3500,
+//     'ativo' => 'S'
+//     ];
     
-    (new CriandoProdutos($entityManager))->criarProduto($dadosProduto);
+//     (new CriandoProdutos($entityManager))->criarProduto($dadosProduto);
     
-//        --->>>>   TUDO ACIMA ESTÁ CORRETO!!!!!!!    <<<<---
+// //        --->>>>   TUDO ACIMA ESTÁ CORRETO!!!!!!!    <<<<---

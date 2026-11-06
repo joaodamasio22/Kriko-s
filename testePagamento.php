@@ -6,7 +6,8 @@ require_once 'bootstrap.php';
 
 $dadosPagamento = [
     'pedido_id' => 1,
-    'status' => 'PENDENTE'
+    'status' => 'PENDENTE',
+    'referencia' => 'Barigadan'
 ];
 
 if(!filter_var($dadosPagamento['pedido_id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
