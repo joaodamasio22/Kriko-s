@@ -135,9 +135,6 @@ class ChainControl
             );
     }
 
-    
-    
-    
     public function atualizarPedido(array $dados): OperacaoDTO
     {
         return $this->executar(
@@ -146,6 +143,7 @@ class ChainControl
                 new AtualizarPedido($this->entityManager)
             );
     }
+
 
 
 
@@ -159,6 +157,10 @@ class ChainControl
                 new CadastrarPagamento($this->entityManager)
             );
     }
+
+
+
+
 
     public function pagamentoAprovado(array $dados): OperacaoDTO
     {

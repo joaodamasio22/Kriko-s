@@ -20,7 +20,7 @@ $dados = [
     'mesa_id' => 1,
     'admin_id' => 1,
     'status' => 'ABERTO',
-    'observacao' => 'Sem Azeitona',
+    'observacao' => 'Capricha patrão',
 
     'itens' => [
         [

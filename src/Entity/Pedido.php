@@ -49,17 +49,17 @@ class Pedido
         return $this->data_pedido;
     }
 
-    public function getStatus(): string
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    public function getValorTotal(): string
+    public function getValorTotal(): ?int
     {
         return $this->valor_total;
     }
 
-    public function getFormaPagamento(): ?string
+    public function getFormaPagamento(): string
     {
         return $this->forma_pagamento;
     }
@@ -111,20 +111,17 @@ class Pedido
 
         $status = strtoupper($status);
 
-        if (!in_array($status, $opcoesValidas, true)) { throw new Exception( "Status inválido. Opções válidas: " . implode(", ", $opcoesValidas));
+        if (!in_array($status, $opcoesValidas, true)) {
+            throw new Exception( "Status inválido. Opções válidas: " . implode(", ", $opcoesValidas));
         }
 
         $this->status = $status;
         return $this;
     }
 
-    public function setValorTotal(float $quantidade, float $preco_unitario): self
+    public function setValorTotal(int $valor_total): self
     {
-        if ($quantidade < 0 || $preco_unitario < 0) {
-            throw new Exception("Quantidade e preço unitário devem ser valores não negativos.");
-        }
-
-        $this->valor_total = number_format($quantidade * $preco_unitario, 2, '.', '');
+        $this->valor_total = $valor_total;
         return $this;
     }
 

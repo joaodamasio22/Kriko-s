@@ -3,6 +3,7 @@
 namespace Kriko\Services\ListService\Cadastrar;
 
 use Doctrine\ORM\EntityManager;
+use Exception;
 use Kriko\Chain\Handler;
 use Kriko\DTO\OperacaoDTO;
 use Kriko\Entity\ItemPedido;
@@ -23,5 +24,15 @@ class CadastrarItemPedido extends Handler {
 
         $this->entityManager->persist($itemPedido);
         $dto->itemPedido = $itemPedido;
+
+        if(!$dto->pedido) {
+            throw new Exception('Pedido não cadastrado, tente novamente');
+        }
+
+        $valor_total = $dto->pedido->getValorTotal();
+        $valorPedido = $dto->obter('quantidade') * $dto->obter('preco_unitario');
+        $valor_total = $valor_total + $valorPedido; 
+
+        $dto->pedido->setValorTotal($valor_total);
     }
 }

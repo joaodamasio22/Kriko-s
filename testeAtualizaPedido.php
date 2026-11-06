@@ -19,4 +19,3 @@ if(!filter_var($dadosAtualizado['pedido_id'], FILTER_VALIDATE_INT, ['options' =>
 }
 
 (new ChainControl($entityManager))->atualizarPedido($dadosAtualizado);
-

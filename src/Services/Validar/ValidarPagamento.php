@@ -11,7 +11,7 @@ class ValidarPagamento extends Handler
     protected function executar(OperacaoDTO $dto): void
     {
         $pedidoId = filter_var($dto->obter('pedido_id'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        $valor = filter_var($dto->obter('valor_centavos'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $valor = filter_var($dto->pedido->getValorTotal(), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         $metodo = $dto->obter('metodo');
 
         if ($pedidoId === false) {
