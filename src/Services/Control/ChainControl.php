@@ -152,8 +152,8 @@ class ChainControl
     {
         return $this->executar(
                 new OperacaoDTO($dados),
-                new ValidarPagamento(),
                 new BuscarPedido($this->entityManager),
+                new ValidarPagamento(),
                 new CadastrarPagamento($this->entityManager)
             );
     }

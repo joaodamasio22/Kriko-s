@@ -2,7 +2,7 @@
 
 namespace Kriko\Services\ListService\Cadastrar;
 
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Kriko\Chain\Handler;
 use Kriko\DTO\OperacaoDTO;
@@ -17,11 +17,11 @@ public function __construct(private EntityManager $entityManager)
     {
         $pagamento = new Pagamento();
         $pagamento
-            ->setPedido($dto->obter('pedido'))
+            ->setPedido($dto->pedido)
             ->setValor($dto->pedido->getValorTotal())
             ->setMetodo($dto->pedido->getFormaPagamento())
             ->setStatus($dto->obter('status'))
-            ->setDataCriacao((new DateTimeImmutable()))
+            ->setDataCriacao((new DateTime()))
         ;
 
         $this->entityManager->persist($pagamento);

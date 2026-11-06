@@ -2,7 +2,7 @@
 
 namespace Kriko\Entity;
 
-use DateTimeImmutable;
+use DateTime;
 
 class Pagamento
 {
@@ -11,9 +11,16 @@ class Pagamento
     private ?int $valor;
     private ?string $metodo;
     private ?string $status;
-    private ?DateTimeImmutable $data_criacao;
-    private ?DateTimeImmutable $data_pagamento;
+    private ?DateTime $data_criacao = null;
+    private ?DateTime $data_pagamento = null;
     private ?string $referencia = null;
+
+    public function __construct()
+    {
+        $this->data_criacao = new DateTime();
+        $this->data_pagamento = new DateTime(); 
+
+    }
 
     // Getters
     public function getId()
@@ -41,7 +48,7 @@ class Pagamento
         return $this->status;
     }
 
-    public function getDataCriacao()
+    public function getDataCriacao(): ?DateTime
     {
         return $this->data_criacao;
     }
@@ -87,13 +94,13 @@ class Pagamento
         return $this;
     }
 
-    public function setDataCriacao(DateTimeImmutable $data_criacao)
+    public function setDataCriacao(DateTime $data_criacao): self
     {
         $this->data_criacao = $data_criacao;
         return $this;
     }
 
-    public function setDataPagamento(DateTimeImmutable $data_pagamento)
+    public function setDataPagamento(DateTime $data_pagamento)
     {
         $this->data_pagamento = $data_pagamento;
         return $this;

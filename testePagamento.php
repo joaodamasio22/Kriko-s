@@ -6,7 +6,7 @@ require_once 'bootstrap.php';
 
 $dadosPagamento = [
     'pedido_id' => 1,
-    'satus' => 'PENDENTE'
+    'status' => 'PENDENTE'
 ];
 
 if(!filter_var($dadosPagamento['pedido_id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
@@ -16,3 +16,6 @@ if(!filter_var($dadosPagamento['pedido_id'], FILTER_VALIDATE_INT, ['options' => 
 }
 
 (new ChainControl($entityManager))->pagamento($dadosPagamento);
+
+//        --->>>>   TUDO ACIMA ESTÁ CORRETO!!!!!!!    <<<<---
+
