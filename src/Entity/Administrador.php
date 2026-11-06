@@ -77,7 +77,7 @@ class Administrador
 
     public function setPerfil(string $perfil)
     {
-        $opcoesValidas = ['MASTER', 'GARÇOM', 'COZINHA'];
+        $opcoesValidas = ['MASTER', 'GARCOM', 'COZINHA'];
 
         if (!in_array($perfil, $opcoesValidas)) {
             throw new Exception("Perfil inválido. Opções válidas: " . implode(", ", $opcoesValidas));

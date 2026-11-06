@@ -9,26 +9,24 @@ use Exception;
 final class AtualizarPedido extends Handler
 {
     private array $status_permitido = [
-            'PENDENTE',
+            'ABERTO',
             'EM_PREPARACAO',
             'PRONTO',
             'FINALIZADO',
-            'CANCELADO',
+            'CANCELADO'
         ];
 
     private array $formas_pagamento = [
             'PIX',
             'DINHEIRO',
             'CARTAO_CREDITO',
-            'CARTAO_DEBITO',
+            'CARTAO_DEBITO'
         ];
 
     private array $transicoes_status = [
             'PENDENTE',
-            'EM_PREPARACAO',
-            'PRONTO',
-            'FINALIZADO',
-            'CANCELADO',
+            'PAGO',
+            'ESTORNADO'
         ];
 
     protected function executar(OperacaoDTO $dto): void
@@ -46,17 +44,23 @@ final class AtualizarPedido extends Handler
                 throw new Exception('Status do pedido inválido.');
             }
 
-            $statusAtual = $pedido->getStatus();
- 
-                if (!in_array($novoStatus, $this->transicoes_status, true)) {
-                    throw new Exception("Não é permitido alterar o pedido ". "de {$statusAtual} para {$novoStatus}.");
+            $pedido->setStatus($novoStatus);
+
+            
+            }
+
+            if($dto->possui('statusPagamento')) {
+                $novoStatusPagamento = $dto->obter('statusPagamento');
+
+                if (!in_array($novoStatusPagamento, $this->transicoes_status, true)) {
+                    throw new Exception("Não é permitido prosseguir com o pagamento do pedido, contate o suporte");
                 }
 
-                $pedido->setStatus($novoStatus);
-            
-        }
+                $pedido->setStatusPagamento($novoStatusPagamento);
 
-        if ($dto->possui('forma_pagamento')) {
+            }
+            
+            if ($dto->possui('forma_pagamento')) {
 
             $formaPagamento = $dto->obter('forma_pagamento');
 
@@ -68,24 +72,15 @@ final class AtualizarPedido extends Handler
                 throw new Exception('Não é permitido alterar a forma de pagamento de um pedido já processado.');
             }
 
-            $pedido->setFormaPagamento(
-                $formaPagamento
-            );
+            $pedido->setFormaPagamento($formaPagamento);
         }
 
-        if ($dto->possui('observacao')) {
+        $statusPagamentos = $dto->obter('statusPagamento');
 
-            $observacao = $dto->obter('observacao');
-
-            if ($observacao !== null && !is_string($observacao)) {
-                throw new Exception('Observação inválida.');
-            }
-
-            if (in_array($pedido->getStatus(), ['FINALIZADO', 'CANCELADO'], true)) {
-                throw new Exception('Não é permitido alterar a observação '. 'de um pedido encerrado.');
-            }
-
-            $pedido->setObservacao($observacao);
+        if(!in_array($statusPagamentos, $this->transicoes_status, true)) {
+            throw new Exception('Status de Pagamento não aceito...');
         }
+
+        $pedido->setStatusPagamento($statusPagamentos);
     }
 }

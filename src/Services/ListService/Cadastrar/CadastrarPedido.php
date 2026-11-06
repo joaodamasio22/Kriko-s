@@ -20,6 +20,7 @@ class CadastrarPedido extends Handler {
             ->setAdministrador($dto->administrador)
             ->setDataPedido((new DateTime()))
             ->setStatus($dto->obter('status'))
+            ->setObservacao($dto->obter('observacao'))
         ;
 
         $this->entityManager->persist($pedido);

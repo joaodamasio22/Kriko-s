@@ -135,22 +135,20 @@ class ChainControl
             );
     }
 
+    
+    
+    
     public function atualizarPedido(array $dados): OperacaoDTO
     {
-        $dto = new OperacaoDTO($dados);
-
-        $pedidoId = filter_var($dto->obter('pedido_id'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-
-        if ($pedidoId === false) {
-            throw new Exception('Identificador do pedido inválido.');
-        }
-
         return $this->executar(
-                $dto,
+                new OperacaoDTO($dados),
                 new BuscarPedido($this->entityManager),
                 new AtualizarPedido($this->entityManager)
             );
     }
+
+
+
 
     public function pagamento(array $dados): OperacaoDTO
     {

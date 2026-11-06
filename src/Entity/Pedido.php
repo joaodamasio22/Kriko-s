@@ -130,7 +130,7 @@ class Pedido
 
     public function setFormaPagamento(string $forma_pagamento): self
     {
-        $opcoesValidas = ['DINHEIRO', 'CARTAO', 'PIX'];
+        $opcoesValidas = ['PIX','DINHEIRO','CARTAO_CREDITO','CARTAO_DEBITO'];
 
         $forma_pagamento = strtoupper($forma_pagamento);
 
@@ -147,7 +147,7 @@ class Pedido
 
     public function setStatusPagamento(string $status_pagamento): self
     {
-        $opcoesValidas = ['PAGO', 'PENDENTE', 'CANCELADO'];
+        $opcoesValidas = ['PAGO', 'PENDENTE', 'ESTORNADO'];
 
         $status_pagamento = strtoupper($status_pagamento);
 
