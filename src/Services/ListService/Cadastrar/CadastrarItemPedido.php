@@ -19,7 +19,7 @@ class CadastrarItemPedido extends Handler {
             ->setPedido($dto->pedido)
             ->setProduto($dto->produto)
             ->setQuantidade($dto->obter('quantidade'))
-            ->setPrecoUnitario($dto->obter('preco_unitario'))
+            ->setPrecoUnitario($dto->produto->getPreco())
         ;
 
         $this->entityManager->persist($itemPedido);

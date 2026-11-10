@@ -12,11 +12,15 @@ class ValidarProduto extends Handler {
         $nome = $dto->obter('nome');
         $descricao = $dto->obter('descricao');
         $categoria = filter_var($dto->obter('categoria_id'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        $preco = filter_var($dto->obter('preco_centavos'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $preco = filter_var($dto->obter('preco'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
         $ativo = $dto->obter('ativo', 'S');
 
         if ($categoria === false) {
             throw new Exception('Categoria inválida.');
+        }
+
+        if ($preco === false) {
+            throw new Exception('Preço do produto inválido.');
         }
 
         if (!is_string($nome) || $nome === '' || mb_strlen($nome) > 100) {

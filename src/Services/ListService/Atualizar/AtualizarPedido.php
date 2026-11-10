@@ -47,20 +47,17 @@ final class AtualizarPedido extends Handler
             $pedido->setStatus($novoStatus);
 
             
+        }
+
+        if ($dto->possui('statusPagamento')) {
+            $novoStatusPagamento = $dto->obter('statusPagamento');
+            if (!is_string($novoStatusPagamento) || !in_array($novoStatusPagamento, $this->transicoes_status, true)) {
+                throw new Exception('Status do pagamento inválido.');
             }
+            $pedido->setStatusPagamento($novoStatusPagamento);
+        }
 
-            if($dto->possui('statusPagamento')) {
-                $novoStatusPagamento = $dto->obter('statusPagamento');
-
-                if (!in_array($novoStatusPagamento, $this->transicoes_status, true)) {
-                    throw new Exception("Não é permitido prosseguir com o pagamento do pedido, contate o suporte");
-                }
-
-                $pedido->setStatusPagamento($novoStatusPagamento);
-
-            }
-            
-            if ($dto->possui('forma_pagamento')) {
+        if ($dto->possui('forma_pagamento')) {
 
             $formaPagamento = $dto->obter('forma_pagamento');
 
@@ -74,13 +71,5 @@ final class AtualizarPedido extends Handler
 
             $pedido->setFormaPagamento($formaPagamento);
         }
-
-        $statusPagamentos = $dto->obter('statusPagamento');
-
-        if(!in_array($statusPagamentos, $this->transicoes_status, true)) {
-            throw new Exception('Status de Pagamento não aceito...');
-        }
-
-        $pedido->setStatusPagamento($statusPagamentos);
     }
 }

@@ -26,5 +26,6 @@ public function __construct(private EntityManager $entityManager)
         ;
 
         $this->entityManager->persist($pagamento);
+        $dto->pagamento = $pagamento;
     }
 }

@@ -18,7 +18,7 @@ class Pagamento
     public function __construct()
     {
         $this->data_criacao = new DateTime();
-        $this->data_pagamento = new DateTime(); 
+        $this->data_pagamento = null;
 
     }
 

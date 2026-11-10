@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS krikos_db;
+CREATE DATABASE IF NOT EXISTS krikos_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE krikos_db;
 
@@ -30,13 +30,12 @@ CREATE TABLE produtos (
     categoria BIGINT NOT NULL,
     nome VARCHAR(100) NOT NULL,
     descricao TEXT,
-    preco INT NOT NULL
+    preco INT NOT NULL,
     ativo CHAR(1) NOT NULL DEFAULT('S'),
 
     CONSTRAINT FK_PRODUTO_CATEGORIA FOREIGN KEY (categoria) REFERENCES categorias(id),
 
-    CONSTRAINT chk_produto_preco CHECK (preco >= 0),
-    CONSTRAINT chk_produto_estoque CHECK (estoque >= 0)
+    CONSTRAINT chk_produto_preco CHECK (preco >= 0)
 );
 
 CREATE TABLE pedidos (

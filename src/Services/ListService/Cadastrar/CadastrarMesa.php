@@ -18,7 +18,7 @@ class CadastrarMesa extends Handler
         $mesa
             ->setNumero_mesa($dto->obter('numeroMesa'))
             ->setDescricao($dto->obter('descricao'))
-            ->setAtivo($dto->obter('ativo'))
+            ->setAtivo($dto->obter('ativo', 'S'))
         ;
 
         $this->entityManager->persist($mesa);
