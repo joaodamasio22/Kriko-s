@@ -100,6 +100,10 @@
   transition: opacity .18s ease-out, transform .18s ease-out;
 }
 
+.choice-art {
+  transition: all 5s;
+}
+
 .choice-pastel .choice-art {
   inset-inline-start: -2%;
   object-position: left bottom;
