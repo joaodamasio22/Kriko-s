@@ -1,0 +1,314 @@
+
+/* ================================
+   PAINEL MASTER - KRIKO'S
+================================ */
+
+.painel-body {
+    margin: 0;
+    padding: 0;
+    background: #21140f;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* CABEÇALHO */
+
+.painel-header {
+    background: #160d09;
+    padding: 20px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #e87824;
+}
+
+.marca h1 {
+    color: #ff9c32;
+    font-size: 30px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.marca span {
+    color: #f5c34d;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.admin {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ff9c32;
+    font-size: 14px;
+}
+
+/* CONTEÚDO PRINCIPAL */
+
+.painel-container {
+    width: 86%;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+.titulo-painel {
+    margin-bottom: 30px;
+}
+
+.titulo-painel h2 {
+    color: #ff9c32;
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.titulo-painel p {
+    color: #c9b8ad;
+    font-size: 15px;
+}
+
+/* MENU */
+
+.menu-master {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
+}
+
+.menu-master a {
+    text-decoration: none;
+    background: #38251b;
+    color: #fff;
+    padding: 13px 25px;
+    border-radius: 7px;
+    border: 1px solid #67432c;
+    transition: 0.3s;
+}
+
+.menu-master a:hover {
+    background: #e87824;
+    color: #fff;
+}
+
+/* SEÇÕES */
+
+.painel-section {
+    background: #2d1c14;
+    padding: 30px;
+    margin-bottom: 35px;
+    border-radius: 12px;
+    border: 1px solid #513625;
+    scroll-margin-top: 20px;
+}
+
+.painel-section h2 {
+    color: #ff9c32;
+    font-size: 22px;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.painel-section h3 {
+    color: #f5c34d;
+    font-size: 18px;
+    margin-top: 35px;
+    margin-bottom: 15px;
+}
+
+/* FORMULÁRIOS */
+
+.form-master {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 650px;
+}
+
+.form-master label {
+    color: #f5c34d;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.form-master input,
+.form-master select,
+.form-master textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px;
+    background: #1c120d;
+    border: 1px solid #67432c;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-master input:focus,
+.form-master select:focus,
+.form-master textarea:focus {
+    border-color: #ff9c32;
+}
+
+.form-master textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.form-master select option {
+    background: #1c120d;
+    color: #fff;
+}
+
+/* BOTÕES */
+
+.btn-master {
+    background: #e87824;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 14px;
+    margin-top: 15px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-master:hover {
+    background: #ff9c32;
+}
+
+.btn-editar,
+.btn-excluir {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-editar {
+    background: #b66a25;
+}
+
+.btn-editar:hover {
+    background: #d98736;
+}
+
+.btn-excluir {
+    background: #a83225;
+}
+
+.btn-excluir:hover {
+    background: #d44232;
+}
+
+/* TABELAS */
+
+.tabela-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabela-container table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+.tabela-container th {
+    background: #e87824;
+    color: #fff;
+    padding: 14px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.tabela-container td {
+    padding: 13px;
+    border-bottom: 1px solid #513625;
+    color: #eee;
+    font-size: 13px;
+}
+
+.tabela-container tr {
+    background: #38251b;
+}
+
+.tabela-container tbody tr:hover {
+    background: #493023;
+}
+
+.acoes {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.acoes form {
+    margin: 0;
+}
+
+/* STATUS */
+
+.status {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.status.ativo {
+    background: #1d5938;
+    color: #8dffb3;
+}
+
+.status.inativo {
+    background: #642b28;
+    color: #ffaaa3;
+}
+
+/* RODAPÉ */
+
+.painel-footer {
+    text-align: center;
+    padding: 20px;
+    color: #a58e80;
+    font-size: 12px;
+    border-top: 1px solid #513625;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 700px) {
+
+    .painel-header {
+        padding: 18px 5%;
+    }
+
+    .painel-container {
+        width: 92%;
+        margin: 25px auto;
+    }
+
+    .painel-section {
+        padding: 18px;
+    }
+
+    .titulo-painel h2 {
+        font-size: 24px;
+    }
+
+    .menu-master {
+        gap: 8px;
+    }
+
+    .menu-master a {
+        padding: 11px 15px;
+        font-size: 13px;
+    }
+
+}
