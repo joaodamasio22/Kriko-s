@@ -1,0 +1,196 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: radial-gradient(circle, #572000, #210900);
+    color: white;
+}
+
+.container {
+    width: 100%;
+    max-width: 750px;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+/* LOGO KRIKO'S */
+
+.logo {
+    margin-bottom: 25px;
+}
+
+.mascote {
+    font-size: 55px;
+}
+
+.logo h1 {
+    font-size: 75px;
+    font-weight: 900;
+    color: #ffdf00;
+    letter-spacing: -4px;
+
+    text-shadow:
+        4px 4px 0px #000,
+        -2px -2px 0px #000;
+}
+
+.logo h2 {
+    color: #ff9900;
+    font-size: 28px;
+    font-weight: 900;
+    text-shadow: 2px 2px #000;
+}
+
+.logo p {
+    margin-top: 18px;
+    font-size: 21px;
+}
+
+/* CAIXA DE LOGIN */
+
+.login-box {
+    border: 4px solid #ff8700;
+    border-radius: 35px;
+
+    padding: 30px 40px;
+
+    background: rgba(35, 12, 0, 0.85);
+
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+}
+
+.usuario {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+.login-box h3 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.subtitulo {
+    color: #ddd;
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+/* CAMPOS */
+
+.campo {
+    display: flex;
+    align-items: center;
+
+    background: #fff;
+    border-radius: 15px;
+
+    padding: 16px 20px;
+    margin-bottom: 15px;
+
+    color: #401600;
+}
+
+.campo span {
+    font-size: 25px;
+    margin-right: 20px;
+}
+
+.campo input {
+    width: 100%;
+    border: none;
+    outline: none;
+
+    font-size: 20px;
+    color: #333;
+    background: transparent;
+}
+
+.campo input::placeholder {
+    color: #888;
+}
+
+/* BOTÃO */
+
+button {
+    width: 100%;
+    padding: 17px;
+
+    border: none;
+    border-radius: 15px;
+
+    background: linear-gradient(90deg, #ff9900, #ff6500);
+
+    color: #241000;
+    font-size: 25px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #ffbf00;
+    transform: scale(1.02);
+}
+
+/* RECUPERAÇÃO DE SENHA */
+
+.esqueceu {
+    display: inline-block;
+    margin-top: 22px;
+
+    color: white;
+    font-size: 17px;
+}
+
+.esqueceu:hover {
+    color: #ffb000;
+}
+
+/* RODAPÉ */
+
+footer {
+    margin-top: 25px;
+    color: #c5a28e;
+    font-size: 13px;
+}
+
+/* CELULAR */
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 15px;
+    }
+
+    .logo h1 {
+        font-size: 55px;
+    }
+
+    .logo h2 {
+        font-size: 21px;
+    }
+
+    .login-box {
+        padding: 25px 18px;
+    }
+
+    .login-box h3 {
+        font-size: 28px;
+    }
+
+    .subtitulo {
+        font-size: 15px;
+    }
+}
