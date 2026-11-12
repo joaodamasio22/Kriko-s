@@ -1,0 +1,24 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+            https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd"
+>
+
+    <entity name="Kriko\Entity\Administrador" table="administradores">
+
+        <id name="id" column="id" type="bigint">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <field name="nome" column="nome" type="string" length="100" />
+        <field name="email" column="email" type="string" length="150" unique="true" />
+        <field name="senha" column="senha" type="string" length="255" />
+        <field name="perfil" column="perfil" type="string" length="50" />
+        <field name="ativo" column="ativo" type="string" length="1" />
+        <field name="dataCadastro" column="data_cadastro" type="datetime"/>
+
+        <one-to-many field="pedidos" target-entity="Kriko\Entity\Pedido" mapped-by="administrador"/>
+
+    </entity>
+
+</doctrine-mapping>
