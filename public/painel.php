@@ -2,9 +2,13 @@
 
 use Kriko\Controller\UserControl;
 use Kriko\Entity\Administrador;
-use Kriko\Repository\CardapioRepository;
 
 require_once dirname(__DIR__) . '/includes/session.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_SESSION['krikos_usuario']['perfil'] ?? '') === 'MASTER') {
+    header('Location: ../master.php', true, 302);
+    exit;
+}
 
 function painelEsc(mixed $valor): string
 {
@@ -97,6 +101,10 @@ try {
                 'nome' => $admin->getNome(),
                 'perfil' => $admin->getPerfil(),
             ];
+            if ($admin->getPerfil() === 'MASTER') {
+                header('Location: ../master.php', true, 303);
+                exit;
+            }
             painelRedirecionar('Acesso liberado.');
         }
 

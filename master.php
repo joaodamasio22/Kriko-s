@@ -1,4 +1,4 @@
-
+<?php require __DIR__ . '/includes/master.php'; ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -28,6 +28,7 @@
     </header>
 
     <main class="painel-container">
+        <?php if ($erro !== ''): ?><p role="alert"><?= masterEsc($erro) ?></p><?php endif; ?>
 
         <div class="titulo-painel">
             <h2>Painel Administrativo</h2>
@@ -49,7 +50,9 @@
 
             <h2>📁 Gerenciar Categorias</h2>
 
-            <form class="form-master">
+            <form class="form-master" method="post" action="master.php">
+                <input type="hidden" name="csrf" value="<?= masterEsc($_SESSION['krikos_csrf']) ?>">
+                <input type="hidden" name="tipo" value="categoria">
 
                 <label>Nome da categoria</label>
 
@@ -67,7 +70,7 @@
                     placeholder="Descrição da categoria"
                 ></textarea>
 
-                <button type="button" class="btn-master">
+                <button type="submit" class="btn-master">
                     Cadastrar Categoria
                 </button>
 
@@ -84,31 +87,12 @@
                             <th>ID</th>
                             <th>Nome</th>
                             <th>Descrição</th>
-                            <th>Ações</th>
                         </tr>
                     </thead>
 
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Pastéis</td>
-                            <td>Categoria de pastéis</td>
-                            <td class="acoes">
-                                <button type="button" class="btn-editar">Editar</button>
-                                <button type="button" class="btn-excluir">Excluir</button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>2</td>
-                            <td>Churros</td>
-                            <td>Categoria de churros</td>
-                            <td class="acoes">
-                                <button type="button" class="btn-editar">Editar</button>
-                                <button type="button" class="btn-excluir">Excluir</button>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody><?php foreach ($categorias as $categoria): ?>
+                        <tr><td><?= (int) $categoria['id'] ?></td><td><?= masterEsc($categoria['nome']) ?></td><td><?= masterEsc($categoria['descricao']) ?></td></tr>
+                        <?php endforeach; ?></tbody>
 
                 </table>
 
@@ -123,14 +107,17 @@
 
             <h2>🍟 Gerenciar Produtos</h2>
 
-            <form class="form-master">
+            <form class="form-master" method="post" action="master.php">
+                <input type="hidden" name="csrf" value="<?= masterEsc($_SESSION['krikos_csrf']) ?>">
+                <input type="hidden" name="tipo" value="produto">
 
                 <label>Categoria</label>
 
                 <select name="id_categoria" required>
                     <option value="">Selecione uma categoria</option>
-                    <option value="1">Pastéis</option>
-                    <option value="2">Churros</option>
+                    <?php foreach ($categorias as $categoria): ?>
+                    <option value="<?= (int) $categoria['id'] ?>"><?= masterEsc($categoria['nome']) ?></option>
+                    <?php endforeach; ?>
                 </select>
 
                 <label>Nome do produto</label>
@@ -167,7 +154,7 @@
                     <option value="N">Inativo</option>
                 </select>
 
-                <button type="button" class="btn-master">
+                <button type="submit" class="btn-master">
                     Cadastrar Produto
                 </button>
 
@@ -186,35 +173,12 @@
                             <th>Produto</th>
                             <th>Preço</th>
                             <th>Status</th>
-                            <th>Ações</th>
                         </tr>
                     </thead>
 
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Pastéis</td>
-                            <td>Pastel de carne</td>
-                            <td>R$ 12,00</td>
-                            <td><span class="status ativo">Ativo</span></td>
-                            <td class="acoes">
-                                <button type="button" class="btn-editar">Editar</button>
-                                <button type="button" class="btn-excluir">Excluir</button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>2</td>
-                            <td>Churros</td>
-                            <td>Churros de chocolate</td>
-                            <td>R$ 10,00</td>
-                            <td><span class="status inativo">Inativo</span></td>
-                            <td class="acoes">
-                                <button type="button" class="btn-editar">Editar</button>
-                                <button type="button" class="btn-excluir">Excluir</button>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody><?php foreach ($produtos as $produto): ?>
+                        <tr><td><?= (int) $produto['id'] ?></td><td><?= masterEsc($produto['categoria_nome']) ?></td><td><?= masterEsc($produto['nome']) ?></td><td>R$ <?= number_format($produto['preco'] / 100, 2, ',', '.') ?></td><td><span class="status <?= $produto['ativo'] === 'S' ? 'ativo' : 'inativo' ?>"><?= $produto['ativo'] === 'S' ? 'Ativo' : 'Inativo' ?></span></td></tr>
+                        <?php endforeach; ?></tbody>
 
                 </table>
 
@@ -229,7 +193,9 @@
 
             <h2>🪑 Gerenciar Mesas</h2>
 
-            <form class="form-master">
+            <form class="form-master" method="post" action="master.php">
+                <input type="hidden" name="csrf" value="<?= masterEsc($_SESSION['krikos_csrf']) ?>">
+                <input type="hidden" name="tipo" value="mesa">
 
                 <label>Número da mesa</label>
 
@@ -256,7 +222,7 @@
                     <option value="N">Inativo</option>
                 </select>
 
-                <button type="button" class="btn-master">
+                <button type="submit" class="btn-master">
                     Cadastrar Mesa
                 </button>
 
@@ -274,33 +240,12 @@
                             <th>Número</th>
                             <th>Descrição</th>
                             <th>Status</th>
-                            <th>Ações</th>
                         </tr>
                     </thead>
 
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>01</td>
-                            <td>Mesa próxima à janela</td>
-                            <td><span class="status ativo">Ativo</span></td>
-                            <td class="acoes">
-                                <button type="button" class="btn-editar">Editar</button>
-                                <button type="button" class="btn-excluir">Excluir</button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>2</td>
-                            <td>02</td>
-                            <td>Mesa interna</td>
-                            <td><span class="status inativo">Inativo</span></td>
-                            <td class="acoes">
-                                <button type="button" class="btn-editar">Editar</button>
-                                <button type="button" class="btn-excluir">Excluir</button>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody><?php foreach ($mesas as $mesa): ?>
+                        <tr><td><?= (int) $mesa['id'] ?></td><td><?= (int) $mesa['numero_mesa'] ?></td><td><?= masterEsc($mesa['descricao']) ?></td><td><span class="status <?= $mesa['ativo'] === 'S' ? 'ativo' : 'inativo' ?>"><?= $mesa['ativo'] === 'S' ? 'Ativo' : 'Inativo' ?></span></td></tr>
+                        <?php endforeach; ?></tbody>
 
                 </table>
 
