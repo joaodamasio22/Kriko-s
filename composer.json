@@ -1,0 +1,18 @@
+{
+    "name": "user/kriko-s",
+    "autoload": {
+        "psr-4": { "Kriko\\": "src/" }
+    },
+    "authors": [
+        {
+            "name": "João Damasio",
+            "email": "joaodamasio039@gmail.com"
+        }
+    ],
+    "require": {
+        "doctrine/orm": "^3",
+        "doctrine/dbal": "^4",
+        "symfony/cache": "^7",
+        "doctrine/collections": "^3.1"
+    }
+}
