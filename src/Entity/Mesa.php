@@ -10,7 +10,7 @@ class Mesa
     private ?int $id = null;
     private int $numero_mesa;
     private ?string $descricao = null;
-    private string $ativo = 'T';
+    private string $ativo = 'S';
 
     private Collection $pedidos;
 

@@ -10,13 +10,15 @@
         </id>
         
         <field name="nome" column="nome" type="string" length="100" />
-        <field name="descricao" column="descricao" type="text" />
+        <field name="descricao" column="descricao" type="text" nullable="true" />
         <field name="preco" column="preco" type="integer" />
         <field name="ativo" column="ativo" type="string" length="1" />
 
-        <many-to-one field="categoria" target-entity="Kriko\Entity\Categoria">
+        <many-to-one field="categoria" target-entity="Kriko\Entity\Categoria" inversed-by="produtos">
             <join-column name="categoria" referenced-column-name="id" />
         </many-to-one>
+
+        <one-to-many field="itensPedido" target-entity="Kriko\Entity\ItemPedido" mapped-by="produto"/>
 
     </entity>
 </doctrine-mapping>

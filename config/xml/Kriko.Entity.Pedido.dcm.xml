@@ -17,12 +17,12 @@
         <field name="valor_total" column="valor_total" type="integer" />
         <field name="observacao" column="observacao" type="text" nullable="true" />
 
-        <many-to-one field="mesa" target-entity="Kriko\Entity\Mesa">
-            <join-column name="mesa" referenced-column-name="id" />
+        <many-to-one field="mesa" target-entity="Kriko\Entity\Mesa" inversed-by="pedidos">
+            <join-column name="mesa" referenced-column-name="id" nullable="false" />
         </many-to-one>
 
-        <many-to-one field="admin" target-entity="Kriko\Entity\Administrador">
-            <join-column name="admin" referenced-column-name="id" />
+        <many-to-one field="admin" target-entity="Kriko\Entity\Administrador" inversed-by="pedidos">
+            <join-column name="admin" referenced-column-name="id" nullable="false" />
         </many-to-one>
 
         <one-to-many field="itens_pedido" target-entity="Kriko\Entity\ItemPedido" mapped-by="pedido" orphan-removal="true">
@@ -30,5 +30,7 @@
                 <cascade-persist />
             </cascade>
         </one-to-many>
+
+        <one-to-many field="pagamentos" target-entity="Kriko\Entity\Pagamento" mapped-by="pedido"/>
     </entity>
 </doctrine-mapping>

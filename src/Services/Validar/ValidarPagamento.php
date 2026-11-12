@@ -13,7 +13,7 @@ class ValidarPagamento extends Handler
         $pedidoId = filter_var($dto->obter('pedido_id'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         $metodo = $dto->pedido->getFormaPagamento();
 
-        if ($pedidoId === false) {
+        if ($dto->pedido === null && $pedidoId === false) {
             throw new Exception('Pedido inválido.');
         }
 

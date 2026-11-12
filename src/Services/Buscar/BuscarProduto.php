@@ -28,6 +28,10 @@ class BuscarProduto extends Handler
             throw new Exception('Produto não encontrado(a).');
         }
 
+        if ($entidade->getAtivo() !== 'S') {
+            throw new Exception('Produto inativo.');
+        }
+
         $dto->produto = $entidade;
     }
 }

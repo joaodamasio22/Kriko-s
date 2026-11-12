@@ -23,6 +23,12 @@ Cadastre os produtos ativos nas categorias `Pastel` ou `Pastéis` e `Churros`. P
 
 Defina `KRIKOS_WHATSAPP` com país, DDD e número em dígitos para ativar o botão de WhatsApp. `KRIKOS_INSTAGRAM` ativa o botão do perfil. A home usa os recortes transparentes `public/imagens/pastel-recortado.png` e `public/imagens/churros-recortado.png`; as fotos originais estão preservadas na mesma pasta.
 
-Na tela de cardápio, cada produto pode ser adicionado ao pedido. O envio usa as rotinas `pedido`, `itemPedido`, `atualizarPedido` e `pagamento` de `UserControl`; a equipe confirma o pagamento na mesa, sem cobrança online. Para associar pedidos a um atendente específico, defina `KRIKOS_WEB_ORDER_ADMIN_ID` com o ID de um administrador ativo. Se houver somente um administrador ativo, ele é identificado automaticamente. O cliente informa o número de uma mesa ativa.
+Na tela de cardápio, cada produto pode ser adicionado ao pedido. O envio usa `UserControl::realizarPedido()`, que coordena as rotinas de pedido, item, atualização e pagamento; a equipe confirma o pagamento na mesa, sem cobrança online. Para associar pedidos a um atendente específico, defina `KRIKOS_WEB_ORDER_ADMIN_ID` com o ID de um administrador ativo. Se houver somente um administrador ativo, ele é identificado automaticamente. O cliente informa o número de uma mesa ativa.
+
+O cadastro web completo também está disponível em `UserControl::realizarPedido()`. Essa operação valida as entidades relacionadas, consulta o preço dos produtos no servidor e grava pedido, itens e pagamento pendente em uma única transação.
 
 O painel interno fica em `public/painel.php`. Entre com um administrador ativo. Ele permite cadastrar categorias, produtos, mesas e acessos; abrir pedidos e adicionar itens; atualizar pedidos; e registrar/aprovar pagamentos. As permissões seguem os perfis `MASTER`, `GARCOM` e `COZINHA`. Senhas antigas em texto são convertidas para hash no primeiro login; novos acessos já são gravados com hash.
+
+## Autenticação
+
+A autenticação foi separada da interface do painel. Uma futura página de login pode usar `Kriko\Services\Auth\AutenticarAdministrador` para validar as credenciais e `includes/auth.php` para iniciar ou encerrar a sessão, consultar o usuário atual e exigir perfis. O login renova o identificador da sessão e o token CSRF.

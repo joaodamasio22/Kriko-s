@@ -24,7 +24,7 @@ class ValidarPedido extends Handler
 
         $observacao = $dto->obter('observacao');
 
-        if ($observacao !== null && !is_string($observacao)) {
+        if ($observacao !== null && (!is_string($observacao) || mb_strlen($observacao) > 500)) {
             throw new Exception('Observação inválida.');
         }
     }

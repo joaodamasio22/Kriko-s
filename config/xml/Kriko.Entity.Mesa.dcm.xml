@@ -10,7 +10,7 @@
         </id>
 
         <field name="numero_mesa" column="numero_mesa" type="integer"  />
-        <field name="descricao" column="descricao" type="string" length="100"  />
+        <field name="descricao" column="descricao" type="string" length="100" nullable="true" />
         <field name="ativo" column="ativo" type="string"  length="1" />
 
         <one-to-many field="pedidos" target-entity="Kriko\Entity\Pedido" mapped-by="mesa"/>

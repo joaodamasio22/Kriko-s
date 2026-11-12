@@ -14,16 +14,18 @@ class Pedido
     private ?Administrador $admin = null;
     private ?DateTime $data_pedido = null;
     private ?string $status = 'ABERTO';
-    private ?int $valor_total = null;
+    private int $valor_total = 0;
     private ?string $forma_pagamento = null;
     private ?string $status_pagamento = null;
     private ?string $observacao = null;
 
     private Collection $itens_pedido;
+    private Collection $pagamentos;
 
     public function __construct()
     {
         $this->itens_pedido = new ArrayCollection();
+        $this->pagamentos = new ArrayCollection();
         $this->data_pedido = new DateTime();
     }
 
@@ -54,12 +56,12 @@ class Pedido
         return $this->status;
     }
 
-    public function getValorTotal(): ?int
+    public function getValorTotal(): int
     {
         return $this->valor_total;
     }
 
-    public function getFormaPagamento(): string
+    public function getFormaPagamento(): ?string
     {
         return $this->forma_pagamento;
     }
@@ -77,6 +79,31 @@ class Pedido
     public function getItens(): Collection
     {
         return $this->itens_pedido;
+    }
+
+    public function getPagamentos(): Collection
+    {
+        return $this->pagamentos;
+    }
+
+    public function adicionarItem(ItemPedido $item): self
+    {
+        if (!$this->itens_pedido->contains($item)) {
+            $this->itens_pedido->add($item);
+            $item->setPedido($this);
+        }
+
+        return $this;
+    }
+
+    public function adicionarPagamento(Pagamento $pagamento): self
+    {
+        if (!$this->pagamentos->contains($pagamento)) {
+            $this->pagamentos->add($pagamento);
+            $pagamento->setPedido($this);
+        }
+
+        return $this;
     }
 
     // Setters

@@ -2,11 +2,12 @@
 
 namespace Kriko\Services\ListService\Atualizar;
 
-use DateTimeImmutable;
+use DateTime;
 use DomainException;
 use InvalidArgumentException;
 use Kriko\Chain\Handler;
 use Kriko\DTO\OperacaoDTO;
+use Kriko\Entity\Pedido;
 
 class PagamentoAprovado extends Handler
 {
@@ -38,35 +39,32 @@ class PagamentoAprovado extends Handler
             throw new DomainException('Não é permitido aprovar pagamento de um pedido cancelado.');
         }
 
+        $totalAprovado = $pagamento->getValor();
+        foreach ($pedido->getPagamentos() as $item) {
+            if ($item->getId() !== $pagamento->getId() && $item->getStatus() === 'APROVADO') {
+                $totalAprovado += $item->getValor();
+            }
+        }
+
         $pagamento->setStatus('APROVADO');
 
         $pagamento->setReferencia(
             trim($referencia)
         );
 
-        $pagamento->setDataPagamento(new DateTimeImmutable());
+        $pagamento->setDataPagamento(new DateTime());
 
         $this->atualizarStatusPedido(
-            $pagamento,
-            $pedido
+            $pedido,
+            $totalAprovado
         );
     }
 
     private function atualizarStatusPedido(
-        object $pagamento,
-        object $pedido
+        Pedido $pedido,
+        int $totalAprovado
     ): void {
-
         $totalPedido = $pedido->getValorTotal();
-
-        $totalAprovado = 0;
-
-        foreach ($pedido->getPagamentos() as $item) {
-
-            if ($item->getStatus() === 'APROVADO') {
-                $totalAprovado += $item->getValor();
-            }
-        }
 
         if ($totalAprovado >= $totalPedido) {
             $pedido->setStatusPagamento('PAGO');

@@ -14,25 +14,42 @@ class CadastrarItemPedido extends Handler {
 
     public function executar(OperacaoDTO $dto): void
     {
+        if ($dto->pedido === null) {
+            throw new Exception('Pedido não cadastrado, tente novamente.');
+        }
+
+        if (!in_array($dto->pedido->getStatus(), ['ABERTO', 'EM_PREPARACAO'], true)) {
+            throw new Exception('Não é permitido adicionar itens a este pedido.');
+        }
+
+        $quantidade = (int) $dto->obter('quantidade');
+        $totalUnidades = $quantidade;
+        $unidadesDoProduto = $quantidade;
+        foreach ($dto->pedido->getItens() as $itemExistente) {
+            $totalUnidades += $itemExistente->getQuantidade();
+            if ($itemExistente->getProduto()?->getId() === $dto->produto->getId()) {
+                $unidadesDoProduto += $itemExistente->getQuantidade();
+            }
+        }
+        if ($totalUnidades > 100 || $unidadesDoProduto > 50) {
+            throw new Exception('O item ultrapassa os limites de quantidade do pedido.');
+        }
+
+        $precoUnitario = $dto->produto->getPreco();
         $itemPedido = new ItemPedido();
         $itemPedido
             ->setPedido($dto->pedido)
             ->setProduto($dto->produto)
-            ->setQuantidade($dto->obter('quantidade'))
-            ->setPrecoUnitario($dto->produto->getPreco())
+            ->setQuantidade($quantidade)
+            ->setPrecoUnitario($precoUnitario)
         ;
 
         $this->entityManager->persist($itemPedido);
+        $dto->pedido->adicionarItem($itemPedido);
         $dto->itemPedido = $itemPedido;
 
-        if(!$dto->pedido) {
-            throw new Exception('Pedido não cadastrado, tente novamente');
-        }
-
-        $valor_total = $dto->pedido->getValorTotal();
-        $valorPedido = $dto->obter('quantidade') * $dto->obter('preco_unitario');
-        $valor_total = $valor_total + $valorPedido; 
-
-        $dto->pedido->setValorTotal($valor_total);
+        $valorTotal = $dto->pedido->getValorTotal();
+        $valorItem = $quantidade * $precoUnitario;
+        $dto->pedido->setValorTotal($valorTotal + $valorItem);
     }
 }

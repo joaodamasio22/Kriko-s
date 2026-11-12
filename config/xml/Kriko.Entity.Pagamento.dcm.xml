@@ -13,11 +13,11 @@
         <field name="metodo" column="metodo" type="string" />
         <field name="status" column="status" type="string" />
         <field name="data_criacao" column="data_criacao" type="datetime" />
-        <field name="data_pagamento" column="data_pagamento" type="datetime" />
-        <field name="referencia" column="referencia" type="string" length="255" />
+        <field name="data_pagamento" column="data_pagamento" type="datetime" nullable="true" />
+        <field name="referencia" column="referencia" type="string" length="255" nullable="true" />
 
-        <many-to-one field="pedido" target-entity="Kriko\Entity\Pedido">
-            <join-column name="pedido" referenced-column-name="id" />
+        <many-to-one field="pedido" target-entity="Kriko\Entity\Pedido" inversed-by="pagamentos">
+            <join-column name="pedido" referenced-column-name="id" nullable="false" />
         </many-to-one>
 
     </entity>

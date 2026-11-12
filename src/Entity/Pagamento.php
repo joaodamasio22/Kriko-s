@@ -8,9 +8,9 @@ class Pagamento
 {
     private ?int $id = null;
     private ?Pedido $pedido = null;
-    private ?int $valor;
-    private ?string $metodo;
-    private ?string $status;
+    private int $valor;
+    private string $metodo;
+    private string $status;
     private ?DateTime $data_criacao = null;
     private ?DateTime $data_pagamento = null;
     private ?string $referencia = null;
@@ -28,22 +28,27 @@ class Pagamento
         return $this->id;
     }
 
-    public function getPedido()
+    public function getPedido(): ?Pedido
     {
         return $this->pedido;
     }
 
-    public function getValorTotal()
+    public function getValorTotal(): int
     {
         return $this->valor;
     }
 
-    public function getMetodo()
+    public function getValor(): int
+    {
+        return $this->valor;
+    }
+
+    public function getMetodo(): string
     {
         return $this->metodo;
     }
 
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -70,7 +75,7 @@ class Pagamento
         return $this;
     }
 
-    public function setValor(float $valor)
+    public function setValor(int $valor)
     {
         $this->valor = $valor;
         return $this;

@@ -10,7 +10,7 @@ class ItemPedido
     private ?Pedido $pedido = null;
     private ?Produto $produto = null;
     private int $quantidade = 1;
-    private string $preco_unitario = '0.00';
+    private int $preco_unitario = 0;
 
     // Getters
 
@@ -34,16 +34,14 @@ class ItemPedido
         return $this->quantidade;
     }
 
-    public function getPrecoUnitario(): string
+    public function getPrecoUnitario(): int
     {
         return $this->preco_unitario;
     }
 
-    public function getSubtotal(): string
+    public function getSubtotal(): int
     {
-        $subtotal = $this->quantidade * (float) $this->preco_unitario;
-
-        return number_format($subtotal, 2, '.', '');
+        return $this->quantidade * $this->preco_unitario;
     }
 
     // Setters
@@ -70,9 +68,13 @@ class ItemPedido
         return $this;
     }
 
-    public function setPrecoUnitario(string $preco_unitario)
+    public function setPrecoUnitario(int $preco_unitario)
     {
-        $this->preco_unitario = number_format((float) $preco_unitario, 2, '.', '');
+        if ($preco_unitario < 0) {
+            throw new InvalidArgumentException("O preço unitário não pode ser negativo.");
+        }
+
+        $this->preco_unitario = $preco_unitario;
         return $this;
     }
 }

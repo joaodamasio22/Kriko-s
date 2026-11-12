@@ -45,6 +45,11 @@ class UserControl
         return $this->chainControl->itemPedido($dados);
     }
 
+    public function realizarPedido(array $dados): OperacaoDTO
+    {
+        return $this->chainControl->realizarPedido($dados);
+    }
+
     public function atualizarPedido(array $dados): OperacaoDTO
     {
         return $this->chainControl->atualizarPedido($dados);
@@ -53,6 +58,11 @@ class UserControl
     public function pagamento(array $dados): OperacaoDTO
     {
         return $this->chainControl->pagamento($dados);
+    }
+
+    public function registrarPagamento(array $dados): OperacaoDTO
+    {
+        return $this->chainControl->registrarPagamento($dados);
     }
 
     public function pagamentoAprovado(array $dados): OperacaoDTO

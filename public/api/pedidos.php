@@ -113,53 +113,36 @@ try {
         $adminId = $administradores[0];
     }
 
-    $precos = [];
     foreach ($quantidades as $produtoId => $_) {
         if (!isset($produtosDoCardapio[$produtoId])) {
             responder(422, ['erro' => 'Um produto não pertence a este cardápio.']);
         }
-        $preco = $conexao->fetchOne("SELECT preco FROM produtos WHERE id = ? AND ativo = 'S'", [$produtoId]);
-        if ($preco === false) {
+        $produtoAtivo = $conexao->fetchOne("SELECT 1 FROM produtos WHERE id = ? AND ativo = 'S'", [$produtoId]);
+        if ($produtoAtivo === false) {
             responder(422, ['erro' => 'Um produto do pedido não está mais disponível.']);
         }
-        $precos[$produtoId] = (int) $preco;
     }
 
-    $conexao->beginTransaction();
-    try {
-        $controle = new UserControl($entityManager);
-        $resultado = $controle->pedido([
-            'mesa_id' => (int) $mesa['id'],
-            'admin_id' => (int) $adminId,
-            'status' => 'ABERTO',
-            'observacao' => $observacao,
-        ]);
-        $pedidoId = $resultado->pedido?->getId();
-        if (!$pedidoId) {
-            throw new RuntimeException('O pedido não recebeu identificador.');
-        }
+    $itensPedido = [];
+    foreach ($quantidades as $produtoId => $quantidade) {
+        $itensPedido[] = [
+            'produto_id' => (int) $produtoId,
+            'quantidade' => $quantidade,
+        ];
+    }
 
-        foreach ($quantidades as $produtoId => $quantidade) {
-            $controle->itemPedido([
-                'pedido_id' => $pedidoId,
-                'produto_id' => (int) $produtoId,
-                'quantidade' => $quantidade,
-                'preco_unitario' => $precos[$produtoId],
-            ]);
-        }
-
-        $controle->atualizarPedido([
-            'pedido_id' => $pedidoId,
-            'forma_pagamento' => $formaPagamento,
-            'statusPagamento' => 'PENDENTE',
-        ]);
-        $controle->pagamento(['pedido_id' => $pedidoId, 'status' => 'PENDENTE']);
-        $conexao->commit();
-    } catch (Throwable $erro) {
-        if ($conexao->getTransactionNestingLevel() > 0) {
-            $conexao->rollBack();
-        }
-        throw $erro;
+    $controle = new UserControl($entityManager);
+    $resultado = $controle->realizarPedido([
+        'mesa_id' => (int) $mesa['id'],
+        'admin_id' => (int) $adminId,
+        'status' => 'ABERTO',
+        'observacao' => $observacao,
+        'forma_pagamento' => $formaPagamento,
+        'itens' => $itensPedido,
+    ]);
+    $pedidoId = $resultado->pedido?->getId();
+    if (!$pedidoId) {
+        throw new RuntimeException('O pedido não recebeu identificador.');
     }
 
     $_SESSION['krikos_ultimo_pedido'] = time();

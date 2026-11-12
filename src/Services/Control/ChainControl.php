@@ -44,24 +44,11 @@ class ChainControl
 
     private function executar(OperacaoDTO $dto, Handler ...$handlers ): OperacaoDTO
     {
-
-        if ($handlers === []) {
-            throw new Exception('Nenhum handler informado.');
-        }
-
-        $total = count($handlers);
-
-        for ($i = 0; $i < $total - 1; $i++) {
-            $handlers[$i]->setProximo(
-                $handlers[$i + 1]
-            );
-        }
-
         $conexao = $this->entityManager->getConnection();
         $conexao->beginTransaction();
 
         try {
-            $resultado = $handlers[0]->processar($dto);
+            $resultado = $this->processar($dto, ...$handlers);
 
             $this->entityManager->flush();
 
@@ -70,10 +57,26 @@ class ChainControl
             return $resultado;
 
         } catch (Throwable $erro) {
-            $conexao->rollBack();
+            if ($conexao->getTransactionNestingLevel() > 0) {
+                $conexao->rollBack();
+            }
 
             throw $erro;
         }
+    }
+
+    private function processar(OperacaoDTO $dto, Handler ...$handlers): OperacaoDTO
+    {
+        if ($handlers === []) {
+            throw new Exception('Nenhum handler informado.');
+        }
+
+        $total = count($handlers);
+        for ($i = 0; $i < $total - 1; $i++) {
+            $handlers[$i]->setProximo($handlers[$i + 1]);
+        }
+
+        return $handlers[0]->processar($dto);
     }
 
     public function categoria(array $dados): OperacaoDTO
@@ -135,6 +138,97 @@ class ChainControl
             );
     }
 
+    public function realizarPedido(array $dados): OperacaoDTO
+    {
+        $itens = $dados['itens'] ?? null;
+        if (!is_array($itens) || $itens === []) {
+            throw new Exception('O pedido deve possuir ao menos um item.');
+        }
+        if (count($itens) > 30) {
+            throw new Exception('O pedido pode possuir no máximo 30 itens distintos.');
+        }
+
+        $quantidadesPorProduto = [];
+        foreach ($itens as $item) {
+            if (!is_array($item)) {
+                throw new Exception('Item do pedido inválido.');
+            }
+
+            $produtoId = filter_var($item['produto_id'] ?? null, FILTER_VALIDATE_INT, [
+                'options' => ['min_range' => 1],
+            ]);
+            $quantidade = filter_var($item['quantidade'] ?? null, FILTER_VALIDATE_INT, [
+                'options' => ['min_range' => 1, 'max_range' => 50],
+            ]);
+            if ($produtoId === false || $quantidade === false) {
+                throw new Exception('Produto ou quantidade inválida no pedido.');
+            }
+
+            $quantidadesPorProduto[$produtoId] = ($quantidadesPorProduto[$produtoId] ?? 0) + $quantidade;
+            if ($quantidadesPorProduto[$produtoId] > 50) {
+                throw new Exception('O limite por produto é 50 unidades.');
+            }
+        }
+
+        if (array_sum($quantidadesPorProduto) > 100) {
+            throw new Exception('O limite por pedido é 100 unidades.');
+        }
+
+        $conexao = $this->entityManager->getConnection();
+        $conexao->beginTransaction();
+
+        try {
+            $pedidoDto = $this->processar(
+                new OperacaoDTO($dados),
+                new ValidarPedido(),
+                new BuscarMesa($this->entityManager),
+                new BuscarAdministrador($this->entityManager),
+                new CadastrarPedido($this->entityManager)
+            );
+
+            foreach ($itens as $item) {
+                $itemDto = new OperacaoDTO($item);
+                $itemDto->pedido = $pedidoDto->pedido;
+                $this->processar(
+                    $itemDto,
+                    new ValidarItemPedido(),
+                    new BuscarProduto($this->entityManager),
+                    new CadastrarItemPedido($this->entityManager)
+                );
+            }
+
+            $atualizacaoDto = new OperacaoDTO([
+                'forma_pagamento' => $dados['forma_pagamento'] ?? null,
+                'statusPagamento' => 'PENDENTE',
+            ]);
+            $atualizacaoDto->pedido = $pedidoDto->pedido;
+            $this->processar(
+                $atualizacaoDto,
+                new AtualizarPedido($this->entityManager)
+            );
+
+            $pagamentoDto = new OperacaoDTO(['status' => 'PENDENTE']);
+            $pagamentoDto->pedido = $pedidoDto->pedido;
+            $this->processar(
+                $pagamentoDto,
+                new ValidarPagamento(),
+                new CadastrarPagamento($this->entityManager)
+            );
+            $pedidoDto->pagamento = $pagamentoDto->pagamento;
+
+            $this->entityManager->flush();
+            $conexao->commit();
+
+            return $pedidoDto;
+        } catch (Throwable $erro) {
+            if ($conexao->getTransactionNestingLevel() > 0) {
+                $conexao->rollBack();
+            }
+
+            throw $erro;
+        }
+    }
+
     public function atualizarPedido(array $dados): OperacaoDTO
     {
         return $this->executar(
@@ -156,6 +250,19 @@ class ChainControl
                 new ValidarPagamento(),
                 new CadastrarPagamento($this->entityManager)
             );
+    }
+
+    public function registrarPagamento(array $dados): OperacaoDTO
+    {
+        $dados['statusPagamento'] = 'PENDENTE';
+
+        return $this->executar(
+            new OperacaoDTO($dados),
+            new BuscarPedido($this->entityManager),
+            new AtualizarPedido($this->entityManager),
+            new ValidarPagamento(),
+            new CadastrarPagamento($this->entityManager)
+        );
     }
 
 

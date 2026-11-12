@@ -1,7 +1,4 @@
 <?php
 
-use Kriko\Controller\UserControl;
-
-require_once "bootstrap.php";
-
-(new UserControl($entityManager));
+header('Location: public/index.php', true, 302);
+exit;

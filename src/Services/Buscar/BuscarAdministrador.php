@@ -24,6 +24,10 @@ class BuscarAdministrador extends Handler {
             throw new Exception('Administrador não encontrado(a).');
         }
 
+        if ($entidade->getAtivo() !== 'S') {
+            throw new Exception('Administrador inativo.');
+        }
+
         $dto->administrador = $entidade;
     }
 }

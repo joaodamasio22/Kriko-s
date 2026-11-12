@@ -1,10 +1,10 @@
 <?php
 
 use Kriko\Controller\UserControl;
-use Kriko\Entity\Administrador;
 use Kriko\Repository\CardapioRepository;
+use Kriko\Services\Auth\AutenticarAdministrador;
 
-require_once dirname(__DIR__) . '/includes/session.php';
+require_once dirname(__DIR__) . '/includes/auth.php';
 
 function painelEsc(mixed $valor): string
 {
@@ -21,14 +21,6 @@ function painelCsrf(): bool
 function painelPost(string $campo): string
 {
     return is_string($_POST[$campo] ?? null) ? trim($_POST[$campo]) : '';
-}
-
-function painelExigirPerfil(array $perfis): void
-{
-    $perfil = $_SESSION['krikos_usuario']['perfil'] ?? '';
-    if (!in_array($perfil, $perfis, true)) {
-        throw new RuntimeException('Seu perfil não pode executar essa operação.');
-    }
 }
 
 function painelRedirecionar(string $mensagem): never
@@ -51,7 +43,7 @@ function painelPrecoCentavos(string $valor): int
 $erro = '';
 $mensagem = $_SESSION['painel_mensagem'] ?? '';
 unset($_SESSION['painel_mensagem']);
-$usuario = $_SESSION['krikos_usuario'] ?? null;
+$usuario = authUsuario();
 $entityManager = null;
 
 try {
@@ -64,45 +56,14 @@ try {
 
         $acao = painelPost('acao');
         if ($acao === 'entrar') {
-            $email = filter_var(painelPost('email'), FILTER_VALIDATE_EMAIL);
             $senha = is_string($_POST['senha'] ?? null) ? $_POST['senha'] : '';
-            $admin = $email ? $entityManager->getRepository(Administrador::class)->findOneBy([
-                'email' => $email,
-                'ativo' => 'S',
-            ]) : null;
-
-            if (!$admin || $senha === '') {
-                throw new RuntimeException('E-mail ou senha inválidos.');
-            }
-
-            $senhaArmazenada = $admin->getSenha();
-            $infoHash = password_get_info($senhaArmazenada);
-            $usaHash = ($infoHash['algo'] ?? null) !== null;
-            $senhaValida = $usaHash
-                ? password_verify($senha, $senhaArmazenada)
-                : hash_equals($senhaArmazenada, $senha);
-
-            if (!$senhaValida) {
-                throw new RuntimeException('E-mail ou senha inválidos.');
-            }
-
-            if (!$usaHash) {
-                $admin->setSenha(password_hash($senha, PASSWORD_DEFAULT));
-                $entityManager->flush();
-            }
-
-            session_regenerate_id(true);
-            $_SESSION['krikos_usuario'] = [
-                'id' => (int) $admin->getId(),
-                'nome' => $admin->getNome(),
-                'perfil' => $admin->getPerfil(),
-            ];
+            $admin = (new AutenticarAdministrador($entityManager))->autenticar(painelPost('email'), $senha);
+            authEntrar($admin);
             painelRedirecionar('Acesso liberado.');
         }
 
         if ($acao === 'sair') {
-            session_regenerate_id(true);
-            unset($_SESSION['krikos_usuario']);
+            authSair();
             painelRedirecionar('Sessão encerrada.');
         }
 
@@ -113,12 +74,12 @@ try {
         $controle = new UserControl($entityManager);
         switch ($acao) {
             case 'categoria':
-                painelExigirPerfil(['MASTER']);
+                authExigirPerfil(['MASTER']);
                 $controle->categoria(['nome' => painelPost('nome'), 'descricao' => painelPost('descricao')]);
                 painelRedirecionar('Categoria cadastrada.');
 
             case 'produto':
-                painelExigirPerfil(['MASTER']);
+                authExigirPerfil(['MASTER']);
                 $controle->produto([
                     'categoria_id' => painelPost('categoria_id'),
                     'nome' => painelPost('nome'),
@@ -129,7 +90,7 @@ try {
                 painelRedirecionar('Produto cadastrado.');
 
             case 'mesa':
-                painelExigirPerfil(['MASTER', 'GARCOM']);
+                authExigirPerfil(['MASTER', 'GARCOM']);
                 $controle->mesa([
                     'numeroMesa' => painelPost('numeroMesa'),
                     'descricao' => painelPost('descricao'),
@@ -138,7 +99,7 @@ try {
                 painelRedirecionar('Mesa cadastrada.');
 
             case 'administrador':
-                painelExigirPerfil(['MASTER']);
+                authExigirPerfil(['MASTER']);
                 $senha = is_string($_POST['senha'] ?? null) ? $_POST['senha'] : '';
                 $email = filter_var(painelPost('email'), FILTER_VALIDATE_EMAIL);
                 if (!$email || strlen($senha) < 8) {
@@ -154,7 +115,7 @@ try {
                 painelRedirecionar('Acesso cadastrado.');
 
             case 'pedido':
-                painelExigirPerfil(['MASTER', 'GARCOM']);
+                authExigirPerfil(['MASTER', 'GARCOM']);
                 $controle->pedido([
                     'mesa_id' => painelPost('mesa_id'),
                     'admin_id' => $usuario['id'],
@@ -164,7 +125,7 @@ try {
                 painelRedirecionar('Pedido aberto.');
 
             case 'itemPedido':
-                painelExigirPerfil(['MASTER', 'GARCOM']);
+                authExigirPerfil(['MASTER', 'GARCOM']);
                 $controle->itemPedido([
                     'pedido_id' => painelPost('pedido_id'),
                     'produto_id' => painelPost('produto_id'),
@@ -174,7 +135,7 @@ try {
 
             case 'atualizarPedido':
                 $perfil = $usuario['perfil'];
-                painelExigirPerfil(['MASTER', 'GARCOM', 'COZINHA']);
+                authExigirPerfil(['MASTER', 'GARCOM', 'COZINHA']);
                 $dados = ['pedido_id' => painelPost('pedido_id')];
                 $status = painelPost('status');
                 if ($status !== '') $dados['status'] = $status;
@@ -188,22 +149,20 @@ try {
                 painelRedirecionar('Pedido atualizado.');
 
             case 'pagamento':
-                painelExigirPerfil(['MASTER', 'GARCOM']);
+                authExigirPerfil(['MASTER', 'GARCOM']);
                 $pedidoId = painelPost('pedido_id');
                 $formaPagamento = painelPost('forma_pagamento');
                 if ($pedidoId === '' || $formaPagamento === '') {
                     throw new InvalidArgumentException('Selecione o pedido e a forma de pagamento.');
                 }
-                $controle->atualizarPedido([
+                $controle->registrarPagamento([
                     'pedido_id' => $pedidoId,
-                    'statusPagamento' => 'PENDENTE',
                     'forma_pagamento' => $formaPagamento,
                 ]);
-                $controle->pagamento(['pedido_id' => $pedidoId, 'status' => 'PENDENTE']);
                 painelRedirecionar('Pagamento pendente registrado.');
 
             case 'pagamentoAprovado':
-                painelExigirPerfil(['MASTER', 'GARCOM']);
+                authExigirPerfil(['MASTER', 'GARCOM']);
                 $controle->pagamentoAprovado([
                     'pagamento_id' => painelPost('pagamento_id'),
                     'referencia' => painelPost('referencia'),
@@ -221,7 +180,7 @@ try {
     error_log('Painel Kriko’s: ' . $falha->getMessage());
 }
 
-$usuario = $_SESSION['krikos_usuario'] ?? null;
+$usuario = authUsuario();
 $categorias = $mesas = $produtos = $pedidos = $pagamentos = [];
 if ($usuario && $entityManager) {
     try {

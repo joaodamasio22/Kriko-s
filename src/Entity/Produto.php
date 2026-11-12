@@ -2,7 +2,6 @@
 
 namespace Kriko\Entity;
 
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
@@ -28,7 +27,7 @@ class Produto
         return $this->id;
     }
 
-    public function getCategoria(?Categoria $categoria)
+    public function getCategoria(): ?Categoria
     {
         return $this->categoria;
     }

@@ -38,6 +38,26 @@ if (pedidoForm) {
   const enviar = document.querySelector('#pedidoEnviar');
   const mensagem = document.querySelector('#pedidoMensagem');
   const moeda = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+  const limitePorProduto = 50;
+  const limitePorPedido = 100;
+
+  function quantidadeDoPedido() {
+    return [...pedido.values()].reduce((total, item) => total + item.quantidade, 0);
+  }
+
+  function adicionarUnidade(item) {
+    if (item.quantidade >= limitePorProduto) {
+      mensagem.textContent = `O limite de ${item.nome} é ${limitePorProduto} unidades.`;
+      return false;
+    }
+    if (quantidadeDoPedido() >= limitePorPedido) {
+      mensagem.textContent = `O limite por pedido é ${limitePorPedido} unidades.`;
+      return false;
+    }
+
+    item.quantidade += 1;
+    return true;
+  }
 
   function renderPedido() {
     lista.replaceChildren();
@@ -74,8 +94,7 @@ if (pedidoForm) {
       aumentar.textContent = '+';
       aumentar.setAttribute('aria-label', `Adicionar uma unidade de ${item.nome}`);
       aumentar.addEventListener('click', () => {
-        item.quantidade += 1;
-        renderPedido();
+        if (adicionarUnidade(item)) renderPedido();
       });
 
       linha.append(descricao, diminuir, unidades, aumentar);
@@ -91,13 +110,20 @@ if (pedidoForm) {
     botao.addEventListener('click', () => {
       const id = botao.dataset.productId;
       const existente = pedido.get(id);
-      if (existente) existente.quantidade += 1;
-      else pedido.set(id, {
-        id,
-        nome: botao.dataset.productName,
-        preco: Number(botao.dataset.productPrice),
-        quantidade: 1,
-      });
+      if (existente) {
+        if (!adicionarUnidade(existente)) return;
+      } else {
+        if (quantidadeDoPedido() >= limitePorPedido) {
+          mensagem.textContent = `O limite por pedido é ${limitePorPedido} unidades.`;
+          return;
+        }
+        pedido.set(id, {
+          id,
+          nome: botao.dataset.productName,
+          preco: Number(botao.dataset.productPrice),
+          quantidade: 1,
+        });
+      }
       mensagem.textContent = `${botao.dataset.productName} adicionado.`;
       renderPedido();
     });
@@ -124,7 +150,9 @@ if (pedidoForm) {
           itens: [...pedido.values()].map(({ id, quantidade }) => ({ produto_id: id, quantidade })),
         }),
       });
-      const resultado = await resposta.json();
+      const resultado = await resposta.json().catch(() => ({
+        erro: 'O servidor retornou uma resposta inválida. Tente novamente.',
+      }));
       if (!resposta.ok) throw new Error(resultado.erro || 'Não foi possível enviar o pedido.');
 
       pedido.clear();

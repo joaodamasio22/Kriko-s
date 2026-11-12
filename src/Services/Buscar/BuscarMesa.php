@@ -26,6 +26,10 @@ class BuscarMesa extends Handler
             throw new Exception('Mesa não encontrado(a).');
         }
 
+        if ($entidade->getAtivo() !== 'S') {
+            throw new Exception('Mesa inativa.');
+        }
+
         $dto->mesa = $entidade;
     }
 }

@@ -18,14 +18,14 @@ require dirname(__DIR__) . '/includes/header.php';
 
     <div class="home-intro-top d-flex justify-content-center align-items-center">
 
-      <a class="home-intro-logo" href="public/index.php" aria-label="Kriko’s — início">KRIKO’S</a>
+      <a class="home-intro-logo" href="index.php" aria-label="Kriko’s — início">KRIKO’S</a>
 
       <h1 class="home-slogan m-0" id="titulo-inicio">Bateu a<br>fome?<br><span>A gente<br>resolve!</span></h1>
 
     </div>
 
     <nav id="cardapio" class="home-options row g-0 flex-grow-1" aria-label="Cardápios">
-      <a href="public/pastel.php" class="choice choice-pastel col-6 position-relative d-flex align-items-center justify-content-center">
+      <a href="pastel.php" class="choice choice-pastel col-6 position-relative d-flex align-items-center justify-content-center">
 
         <span<?= $temPastel ? ' class="visually-hidden"' : '' ?>>Pastéis crocantes</span>
 
@@ -35,7 +35,7 @@ require dirname(__DIR__) . '/includes/header.php';
 
       </a>
 
-      <a href="public/churros.php" class="choice choice-churros col-6 position-relative d-flex align-items-center justify-content-center">
+      <a href="churros.php" class="choice choice-churros col-6 position-relative d-flex align-items-center justify-content-center">
 
         <span<?= $temChurros ? ' class="visually-hidden"' : '' ?>>churros feitos</span>
 

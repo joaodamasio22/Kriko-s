@@ -22,7 +22,7 @@ class CadastrarAdministrador extends Handler
             ->setEmail($dto->obter('email'))
             ->setSenha($dto->obter('senha'))
             ->setPerfil($dto->obter('perfil'))
-            ->setAtivo($dto->obter('ativo'))
+            ->setAtivo($dto->obter('ativo', 'S'))
             ->setDataCadastro((new DateTime()))
         ;
 
