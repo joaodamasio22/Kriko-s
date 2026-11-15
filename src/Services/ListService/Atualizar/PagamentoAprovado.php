@@ -2,74 +2,28 @@
 
 namespace Kriko\Services\ListService\Atualizar;
 
-use DateTimeImmutable;
+use Doctrine\ORM\EntityManager;
 use DomainException;
-use InvalidArgumentException;
 use Kriko\Chain\Handler;
 use Kriko\DTO\OperacaoDTO;
+use Kriko\Services\PagamentoPresencial;
 
 class PagamentoAprovado extends Handler
 {
+    public function __construct(private readonly EntityManager $entityManager) {}
+
     protected function executar(OperacaoDTO $dto): void
     {
         $pagamento = $dto->pagamento;
-
-        if ($pagamento === null) {
-            throw new DomainException('Nenhum pagamento foi carregado.');
+        $pedido = $pagamento?->getPedido();
+        $responsavelId = filter_var($dto->obter('responsavel_id'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if (!$pedido || !$responsavelId) {
+            throw new DomainException('Informe o pagamento e o responsável pelo recebimento.');
         }
-
-        if ($pagamento->getStatus() !== 'PENDENTE') {
-            throw new DomainException('Somente pagamentos pendentes podem ser aprovados.');
-        }
-
-        $referencia = $dto->obter('referencia');
-
-        if (!is_string($referencia) || trim($referencia) === '' || mb_strlen($referencia) > 255) {
-            throw new InvalidArgumentException('Referência de pagamento inválida.');
-        }
-
-        $pedido = $pagamento->getPedido();
-
-        if ($pedido === null) {
-            throw new DomainException('Pagamento para pedido não existente.');
-        }
-
-        if ($pedido->getStatus() === 'CANCELADO') {
-            throw new DomainException('Não é permitido aprovar pagamento de um pedido cancelado.');
-        }
-
-        $pagamento->setStatus('APROVADO');
-
-        $pagamento->setReferencia(
-            trim($referencia)
+        (new PagamentoPresencial($this->entityManager->getConnection()))->confirmar(
+            (int) $pedido->getId(), $responsavelId, $pedido->getFormaPagamento(), (int) $pagamento->getValorTotal()
         );
-
-        $pagamento->setDataPagamento(new DateTimeImmutable());
-
-        $this->atualizarStatusPedido(
-            $pagamento,
-            $pedido
-        );
-    }
-
-    private function atualizarStatusPedido(
-        object $pagamento,
-        object $pedido
-    ): void {
-
-        $totalPedido = $pedido->getValorTotal();
-
-        $totalAprovado = 0;
-
-        foreach ($pedido->getPagamentos() as $item) {
-
-            if ($item->getStatus() === 'APROVADO') {
-                $totalAprovado += $item->getValor();
-            }
-        }
-
-        if ($totalAprovado >= $totalPedido) {
-            $pedido->setStatusPagamento('PAGO');
-        }
+        $this->entityManager->refresh($pedido);
+        $this->entityManager->refresh($pagamento);
     }
 }

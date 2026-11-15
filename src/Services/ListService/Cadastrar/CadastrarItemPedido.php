@@ -14,6 +14,9 @@ class CadastrarItemPedido extends Handler {
 
     public function executar(OperacaoDTO $dto): void
     {
+        if ($dto->pedido->getStatusPagamento() === 'PAGO' || in_array($dto->pedido->getStatus(), ['FINALIZADO', 'CANCELADO'], true)) {
+            throw new Exception('Não é permitido adicionar itens a um pedido pago ou encerrado.');
+        }
         $itemPedido = new ItemPedido();
         $itemPedido
             ->setPedido($dto->pedido)
@@ -30,7 +33,7 @@ class CadastrarItemPedido extends Handler {
         }
 
         $valor_total = $dto->pedido->getValorTotal();
-        $valorPedido = $dto->obter('quantidade') * $dto->obter('preco_unitario');
+        $valorPedido = $itemPedido->getQuantidade() * $itemPedido->getPrecoUnitario();
         $valor_total = $valor_total + $valorPedido; 
 
         $dto->pedido->setValorTotal($valor_total);

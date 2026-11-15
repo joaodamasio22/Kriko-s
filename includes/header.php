@@ -11,7 +11,7 @@ $themeColors = ['home' => '#5e210c', 'pastel' => '#ff8d28', 'churros' => '#f4262
   <meta name="theme-color" content="<?= $themeColors[$page] ?? $themeColors['home'] ?>">
   <title><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></title>
   <link rel="stylesheet" href="assets/vendor/bootstrap.min.css">
-  <link rel="stylesheet" href="style.css?v=17">
+  <link rel="stylesheet" href="style.css?v=20">
   <script src="assets/vendor/bootstrap.bundle.min.js" defer></script>
 </head>
 <body class="page-<?= htmlspecialchars($page, ENT_QUOTES, 'UTF-8') ?>">

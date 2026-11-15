@@ -2,11 +2,8 @@
 
 use Kriko\Controller\UserControl;
 
-require_once __DIR__ . '/session.php';
-if (($_SESSION['krikos_usuario']['perfil'] ?? '') !== 'MASTER') {
-    header('Location: public/painel.php', true, 302);
-    exit;
-}
+require_once __DIR__ . '/auth.php';
+krikosExigirPerfil(['MASTER']);
 
 function masterEsc(mixed $valor): string
 {

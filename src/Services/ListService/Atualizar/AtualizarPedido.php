@@ -40,6 +40,10 @@ final class AtualizarPedido extends Handler
         if ($dto->possui('status')) {
             $novoStatus = $dto->obter('status');
 
+            if ($novoStatus === 'FINALIZADO' && $pedido->getStatusPagamento() !== 'PAGO') {
+                throw new Exception('Confirme o recebimento antes de finalizar o pedido.');
+            }
+
             if (!is_string($novoStatus) || !in_array($novoStatus, $this->status_permitido, true)) {
                 throw new Exception('Status do pedido inválido.');
             }
@@ -51,6 +55,9 @@ final class AtualizarPedido extends Handler
 
         if ($dto->possui('statusPagamento')) {
             $novoStatusPagamento = $dto->obter('statusPagamento');
+            if ($pedido->getStatusPagamento() === 'PAGO' && $novoStatusPagamento !== 'PAGO') {
+                throw new Exception('O recebimento já foi confirmado para este pedido.');
+            }
             if (!is_string($novoStatusPagamento) || !in_array($novoStatusPagamento, $this->transicoes_status, true)) {
                 throw new Exception('Status do pagamento inválido.');
             }

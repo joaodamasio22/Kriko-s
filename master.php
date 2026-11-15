@@ -8,7 +8,7 @@
 
     <title>Painel Master | Kriko's</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="master.css?v=2">
 </head>
 
 <body class="painel-body">
@@ -23,6 +23,10 @@
         <div class="admin">
             <span>👤</span>
             <strong>MASTER</strong>
+            <form method="post" action="sair.php">
+                <input type="hidden" name="csrf" value="<?= masterEsc($_SESSION['krikos_csrf']) ?>">
+                <button type="submit" class="btn-master">Sair</button>
+            </form>
         </div>
 
     </header>
@@ -38,6 +42,7 @@
         <!-- MENU DE NAVEGAÇÃO -->
 
         <nav class="menu-master">
+            <a href="pedidos.php">Pedidos e pagamentos</a>
             <a href="#categorias">Categorias</a>
             <a href="#produtos">Produtos</a>
             <a href="#mesas">Mesas</a>

@@ -1,5 +1,8 @@
 <?php
 
+require_once dirname(__DIR__) . '/includes/auth.php';
+krikosExigirPerfil(['GARCOM']);
+
 $page = 'home';
 $pastelArt = 'imagens/pastel-recortado.png';
 $churrosArt = 'imagens/churros-recortado.png';
@@ -11,6 +14,14 @@ require dirname(__DIR__) . '/includes/header.php';
 ?>
 
 <main id="conteudo" class="home-track">
+  <nav class="staff-bar" aria-label="Área do garçom">
+    <span>Olá, <?= htmlspecialchars($_SESSION['krikos_usuario']['nome'], ENT_QUOTES, 'UTF-8') ?></span>
+    <a class="text-warning" href="pedidos.php">Pedidos e pagamentos</a>
+    <form method="post" action="sair.php">
+      <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['krikos_csrf'], ENT_QUOTES, 'UTF-8') ?>">
+      <button type="submit">Sair</button>
+    </form>
+  </nav>
 
   <!-- A rolagem desloca o mesmo logo enquanto os dois cardápios ficam à vista. -->
 

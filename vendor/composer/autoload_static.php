@@ -41,7 +41,7 @@ class ComposerStaticInit2608c83e446160249d3a3770633d6f29
         ),
         'K' =>
         array (
-            'Kriko\\Entity\\' => 13,
+            'Kriko\\' => 6,
         ),
         'D' =>
         array (
@@ -118,9 +118,9 @@ class ComposerStaticInit2608c83e446160249d3a3770633d6f29
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
-        'Kriko\\Entity\\' =>
+        'Kriko\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/src/Services/Entity',
+            0 => __DIR__ . '/../..' . '/src',
         ),
         'Doctrine\\Persistence\\' =>
         array (

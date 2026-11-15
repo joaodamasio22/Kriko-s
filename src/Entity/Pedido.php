@@ -14,7 +14,7 @@ class Pedido
     private ?Administrador $admin = null;
     private ?DateTime $data_pedido = null;
     private ?string $status = 'ABERTO';
-    private ?int $valor_total = null;
+    private int $valor_total = 0;
     private ?string $forma_pagamento = null;
     private ?string $status_pagamento = null;
     private ?string $observacao = null;
@@ -59,7 +59,7 @@ class Pedido
         return $this->valor_total;
     }
 
-    public function getFormaPagamento(): string
+    public function getFormaPagamento(): ?string
     {
         return $this->forma_pagamento;
     }

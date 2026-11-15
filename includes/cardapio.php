@@ -1,7 +1,8 @@
 <?php
 use Kriko\Repository\CardapioRepository;
 
-require_once __DIR__ . '/session.php';
+require_once __DIR__ . '/auth.php';
+krikosExigirPerfil(['GARCOM']);
 
 $isPastel = $page === 'pastel';
 $categoria = $isPastel ? 'Pastéis' : 'Churros';
@@ -66,6 +67,12 @@ require __DIR__ . '/header.php';
     </nav>
   </header>
 
+  <nav class="d-flex gap-2 mb-3" aria-label="Escolher cardápio">
+    <a class="btn btn-outline-dark" href="pedidos.php">Pedidos e pagamentos</a>
+    <a class="btn btn-outline-dark<?= $isPastel ? ' active' : '' ?>" href="pastel.php"<?= $isPastel ? ' aria-current="page"' : '' ?>>Pastéis</a>
+    <a class="btn btn-outline-dark<?= !$isPastel ? ' active' : '' ?>" href="churros.php"<?= !$isPastel ? ' aria-current="page"' : '' ?>>Churros</a>
+  </nav>
+
   <?php if ($cardapioIndisponivel): ?>
   <p class="text-dark">O cardápio está temporariamente indisponível.</p>
   <?php elseif ($grupos === []): ?>
@@ -108,7 +115,7 @@ require __DIR__ . '/header.php';
 
   <div class="modal fade" id="pedidoModal" tabindex="-1" aria-labelledby="pedidoTitulo" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <form class="modal-content" id="pedidoForm">
+      <form class="modal-content" id="pedidoForm" data-cart-key="krikos-pedido-<?= (int) $_SESSION['krikos_usuario']['id'] ?>-<?= e($_SESSION['krikos_csrf']) ?>">
         <div class="modal-header">
           <h2 class="modal-title fs-5" id="pedidoTitulo">Seu pedido</h2>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -117,19 +124,14 @@ require __DIR__ . '/header.php';
           <ul class="list-group mb-3" id="pedidoItens" aria-live="polite"></ul>
           <p class="d-flex justify-content-between fw-semibold"><span>Total</span><span id="pedidoTotal">R$ 0,00</span></p>
           <input type="hidden" name="csrf" value="<?= e($_SESSION['krikos_csrf']) ?>">
-          <input type="hidden" name="cardapio" value="<?= e($page) ?>">
+          <p class="small">Pastéis e churros vão juntos no mesmo pedido.</p>
+          <nav class="d-flex gap-2 mb-3" aria-label="Continuar adicionando itens">
+            <a class="btn btn-sm btn-outline-dark" href="pastel.php">Adicionar pastéis</a>
+            <a class="btn btn-sm btn-outline-dark" href="churros.php">Adicionar churros</a>
+          </nav>
           <div class="mb-3">
             <label class="form-label" for="pedidoMesa">Número da mesa</label>
             <input class="form-control" id="pedidoMesa" name="mesa_numero" type="number" min="1" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="pedidoPagamento">Pagamento</label>
-            <select class="form-select" id="pedidoPagamento" name="forma_pagamento" required>
-              <option value="PIX">Pix</option>
-              <option value="DINHEIRO">Dinheiro</option>
-              <option value="CARTAO_CREDITO">Cartão de crédito</option>
-              <option value="CARTAO_DEBITO">Cartão de débito</option>
-            </select>
           </div>
           <div class="mb-3">
             <label class="form-label" for="pedidoObservacao">Observação <span class="text-muted">(opcional)</span></label>
@@ -145,5 +147,5 @@ require __DIR__ . '/header.php';
     </div>
   </div>
 </main>
-<script src="assets/cardapio.js?v=12" defer></script>
+<script src="assets/cardapio.js?v=14" defer></script>
 <?php require __DIR__ . '/footer.php'; ?>

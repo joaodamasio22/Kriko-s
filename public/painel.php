@@ -3,10 +3,14 @@
 use Kriko\Controller\UserControl;
 use Kriko\Entity\Administrador;
 
-require_once dirname(__DIR__) . '/includes/session.php';
+require_once dirname(__DIR__) . '/includes/auth.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_SESSION['krikos_usuario']['perfil'] ?? '') === 'MASTER') {
-    header('Location: ../master.php', true, 302);
+if (isset($_SESSION['krikos_usuario']) && !in_array($_SESSION['krikos_usuario']['perfil'] ?? '', ['MASTER', 'GARCOM', 'COZINHA'], true)) {
+    unset($_SESSION['krikos_usuario']);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SESSION['krikos_usuario'])) {
+    header('Location: ' . krikosDestino($_SESSION['krikos_usuario']['perfil']), true, 302);
     exit;
 }
 
@@ -101,11 +105,8 @@ try {
                 'nome' => $admin->getNome(),
                 'perfil' => $admin->getPerfil(),
             ];
-            if ($admin->getPerfil() === 'MASTER') {
-                header('Location: ../master.php', true, 303);
-                exit;
-            }
-            painelRedirecionar('Acesso liberado.');
+            header('Location: ' . krikosDestino($admin->getPerfil()), true, 303);
+            exit;
         }
 
         if ($acao === 'sair') {
@@ -116,6 +117,10 @@ try {
 
         if (!$usuario) {
             throw new RuntimeException('Entre no painel para continuar.');
+        }
+
+        if ($usuario['perfil'] === 'COZINHA') {
+            throw new RuntimeException('Use a tela da cozinha para atualizar os pedidos.');
         }
 
         $controle = new UserControl($entityManager);
@@ -214,7 +219,7 @@ try {
                 painelExigirPerfil(['MASTER', 'GARCOM']);
                 $controle->pagamentoAprovado([
                     'pagamento_id' => painelPost('pagamento_id'),
-                    'referencia' => painelPost('referencia'),
+                    'responsavel_id' => $usuario['id'],
                 ]);
                 painelRedirecionar('Pagamento aprovado.');
 
@@ -251,10 +256,56 @@ if ($usuario && $entityManager) {
     }
 }
 
-$page = 'admin';
-$title = 'Kriko’s — painel';
+$page = $usuario ? 'admin' : 'login';
+$title = $usuario ? 'Kriko’s — painel' : 'Login | Kriko’s';
 require dirname(__DIR__) . '/includes/header.php';
 ?>
+<?php if (!$usuario): ?>
+<main class="login-shell">
+  <div class="login-container">
+    <header class="login-brand">
+      <img class="login-logo" src="imagens/logo.png" alt="Kriko’s">
+      <p class="login-tagline">Sabor que faz você voltar!</p>
+    </header>
+
+    <section class="login-box" aria-labelledby="entrarTitulo">
+      <div class="login-user-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" role="img"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5 0-9 2.5-9 5.5V22h18v-2.5C21 16.5 17 14 12 14Z"/></svg>
+      </div>
+      <h1 id="entrarTitulo">Faça seu login</h1>
+      <p class="login-subtitle">Entre com seu e-mail e senha para continuar</p>
+
+      <?php if ($mensagem !== ''): ?><div class="login-alert login-alert-success" role="status"><?= painelEsc($mensagem) ?></div><?php endif; ?>
+      <?php if ($erro !== ''): ?><div class="login-alert login-alert-error" role="alert"><?= painelEsc($erro) ?></div><?php endif; ?>
+
+      <form method="post" action="painel.php">
+        <input type="hidden" name="csrf" value="<?= painelEsc($_SESSION['krikos_csrf']) ?>">
+        <input type="hidden" name="acao" value="entrar">
+
+        <label class="login-field" for="email">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+          <span class="visually-hidden">E-mail</span>
+          <input id="email" name="email" type="email" placeholder="E-mail" autocomplete="username" required autofocus>
+        </label>
+
+        <label class="login-field" for="senha">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h-1V6a5 5 0 0 0-10 0v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2Zm-6 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4Zm3.1-9H8.9V6a3.1 3.1 0 0 1 6.2 0v2Z"/></svg>
+          <span class="visually-hidden">Senha</span>
+          <input id="senha" name="senha" type="password" placeholder="Senha" autocomplete="current-password" required>
+        </label>
+
+        <button class="login-submit" type="submit">Entrar</button>
+      </form>
+
+      <a class="login-forgot" href="esqueci_senha.php">Esqueci minha senha</a>
+    </section>
+
+    <footer class="login-footer">© <?= date('Y') ?> KRIKO’S — Todos os direitos reservados.</footer>
+  </div>
+</main>
+<?php require dirname(__DIR__) . '/includes/footer.php'; ?>
+<?php return; ?>
+<?php endif; ?>
 <main class="container py-4 py-lg-5">
   <header class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
     <div>
@@ -267,26 +318,6 @@ require dirname(__DIR__) . '/includes/header.php';
   <?php if ($mensagem !== ''): ?><div class="alert alert-success" role="status"><?= painelEsc($mensagem) ?></div><?php endif; ?>
   <?php if ($erro !== ''): ?><div class="alert alert-danger" role="alert"><?= painelEsc($erro) ?></div><?php endif; ?>
 
-  <?php if (!$usuario): ?>
-  <section class="card shadow-sm mx-auto" style="max-width: 28rem" aria-labelledby="entrarTitulo">
-    <div class="card-body p-4">
-      <h2 class="h4 mb-3" id="entrarTitulo">Entrar</h2>
-      <form method="post" action="painel.php">
-        <input type="hidden" name="csrf" value="<?= painelEsc($_SESSION['krikos_csrf']) ?>">
-        <input type="hidden" name="acao" value="entrar">
-        <div class="mb-3">
-          <label class="form-label" for="email">E-mail</label>
-          <input class="form-control" id="email" name="email" type="email" autocomplete="username" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="senha">Senha</label>
-          <input class="form-control" id="senha" name="senha" type="password" autocomplete="current-password" required>
-        </div>
-        <button class="btn btn-dark w-100" type="submit">Entrar</button>
-      </form>
-    </div>
-  </section>
-  <?php else: ?>
   <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
     <p class="mb-0">Olá, <strong><?= painelEsc($usuario['nome']) ?></strong> · <?= painelEsc($usuario['perfil']) ?></p>
     <form method="post" action="painel.php">
@@ -457,6 +488,5 @@ require dirname(__DIR__) . '/includes/header.php';
       </div>
     </div>
   </section>
-  <?php endif; ?>
 </main>
 <?php require dirname(__DIR__) . '/includes/footer.php'; ?>

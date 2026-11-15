@@ -20,6 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require_once dirname(__DIR__, 2) . '/includes/session.php';
 
+if (($_SESSION['krikos_usuario']['perfil'] ?? '') !== 'GARCOM') {
+    responder(isset($_SESSION['krikos_usuario']) ? 403 : 401, ['erro' => 'Entre com um acesso de garçom para registrar pedidos.']);
+}
+
 $origem = $_SERVER['HTTP_ORIGIN'] ?? '';
 $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 $origemEsperada = $protocolo . '://' . ($_SERVER['HTTP_HOST'] ?? '');
@@ -44,15 +48,12 @@ if (!is_array($dados) || !isset($_SESSION['krikos_csrf']) ||
 }
 
 $mesaNumero = filter_var($dados['mesa_numero'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-$formaPagamento = $dados['forma_pagamento'] ?? '';
-$tipoCardapio = $dados['cardapio'] ?? '';
 $observacao = trim(is_string($dados['observacao'] ?? null) ? $dados['observacao'] : '');
 $itens = $dados['itens'] ?? null;
 
-if ($mesaNumero === false || !in_array($tipoCardapio, ['pastel', 'churros'], true) ||
-    !in_array($formaPagamento, ['PIX', 'DINHEIRO', 'CARTAO_CREDITO', 'CARTAO_DEBITO'], true) ||
+if ($mesaNumero === false ||
     !is_array($itens) || $itens === [] || count($itens) > 30 || mb_strlen($observacao) > 500) {
-    responder(422, ['erro' => 'Confira a mesa, o pagamento e os itens do pedido.']);
+    responder(422, ['erro' => 'Confira a mesa e os itens do pedido.']);
 }
 
 $quantidades = [];
@@ -91,29 +92,24 @@ try {
         responder(422, ['erro' => 'Essa mesa não está cadastrada como ativa.']);
     }
 
-    $menu = (new CardapioRepository($conexao))->listar($tipoCardapio);
     $produtosDoCardapio = [];
-    foreach (['mais_vendidos', 'individuais', 'porcoes'] as $grupo) {
-        foreach ($menu[$grupo] as $produto) {
-            $produtosDoCardapio[(int) $produto['id']] = true;
+    $repositorio = new CardapioRepository($conexao);
+    foreach (['pastel', 'churros'] as $tipo) {
+        $menu = $repositorio->listar($tipo);
+        foreach (['individuais', 'porcoes'] as $grupo) {
+            foreach ($menu[$grupo] as $produto) {
+                $produtosDoCardapio[(int) $produto['id']] = true;
+            }
         }
     }
 
-    $adminConfigurado = filter_var(getenv('KRIKOS_WEB_ORDER_ADMIN_ID') ?: null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-    if ($adminConfigurado !== false) {
-        $adminId = $conexao->fetchOne("SELECT id FROM administradores WHERE id = ? AND ativo = 'S'", [$adminConfigurado]);
-        if ($adminId === false) {
-            responder(503, ['erro' => 'O atendente configurado para pedidos não está ativo.']);
-        }
-    } else {
-        $administradores = $conexao->fetchFirstColumn("SELECT id FROM administradores WHERE ativo = 'S' ORDER BY id LIMIT 2");
-        if (count($administradores) !== 1) {
-            responder(503, ['erro' => 'Configure KRIKOS_WEB_ORDER_ADMIN_ID para registrar pedidos.']);
-        }
-        $adminId = $administradores[0];
+    $adminId = $conexao->fetchOne(
+        "SELECT id FROM administradores WHERE id = ? AND ativo = 'S' AND perfil = 'GARCOM'",
+        [(int) $_SESSION['krikos_usuario']['id']]
+    );
+    if ($adminId === false) {
+        responder(403, ['erro' => 'O acesso de garçom não está mais ativo. Entre novamente.']);
     }
-
-    $precos = [];
     foreach ($quantidades as $produtoId => $_) {
         if (!isset($produtosDoCardapio[$produtoId])) {
             responder(422, ['erro' => 'Um produto não pertence a este cardápio.']);
@@ -122,7 +118,6 @@ try {
         if ($preco === false) {
             responder(422, ['erro' => 'Um produto do pedido não está mais disponível.']);
         }
-        $precos[$produtoId] = (int) $preco;
     }
 
     $conexao->beginTransaction();
@@ -144,16 +139,13 @@ try {
                 'pedido_id' => $pedidoId,
                 'produto_id' => (int) $produtoId,
                 'quantidade' => $quantidade,
-                'preco_unitario' => $precos[$produtoId],
             ]);
         }
 
         $controle->atualizarPedido([
             'pedido_id' => $pedidoId,
-            'forma_pagamento' => $formaPagamento,
             'statusPagamento' => 'PENDENTE',
         ]);
-        $controle->pagamento(['pedido_id' => $pedidoId, 'status' => 'PENDENTE']);
         $conexao->commit();
     } catch (Throwable $erro) {
         if ($conexao->getTransactionNestingLevel() > 0) {
