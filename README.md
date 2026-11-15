@@ -128,25 +128,19 @@ O login usa o e-mail informado no cadastro e a senha original, não o hash. Esse
 
 Execute os comandos na raiz do projeto, com as variáveis do banco já configuradas.
 
-### Windows
-
-```powershell
-.\iniciar.bat
-```
-
-O arquivo inicia o servidor na porta `8765`. Para escolher outra porta:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\iniciar.ps1 -Port 8766
-```
-
-### Qualquer sistema com PHP instalado
-
 ```text
 php -S 127.0.0.1:8765 -t public
 ```
 
-Abra **http://127.0.0.1:8765** no navegador. A página inicial direciona para o login. Se escolher outra porta, use a mesma porta no endereço.
+O comando funciona no Windows, Linux e macOS. Abra **http://127.0.0.1:8765** no navegador. A página inicial direciona para o login.
+
+Se a porta estiver ocupada, escolha outra, por exemplo:
+
+```text
+php -S 127.0.0.1:8766 -t public
+```
+
+Nesse caso, abra **http://127.0.0.1:8766**.
 
 Mantenha o terminal aberto durante o uso. Para encerrar o servidor, pressione `Ctrl+C`. O MySQL também precisa continuar em execução.
 
@@ -232,8 +226,6 @@ config/xml/             Mapeamentos do Doctrine
 bin/control             Comandos de console do Doctrine
 tests/                  Testes de integração e do carrinho
 bootstrap.php           Inicialização do Doctrine e conexão com o banco
-iniciar.bat              Inicialização no Windows
-iniciar.ps1              Servidor local com porta configurável
 ```
 
-As dependências e arquivos locais, como `vendor/`, `node_modules/`, `.local/`, logs e configurações `.env`, são ignorados pelo Git. Mantenha `composer.json`, `composer.lock`, o schema SQL e os scripts de inicialização no repositório.
+As dependências e arquivos locais, como `vendor/`, `node_modules/`, logs e configurações `.env`, são ignorados pelo Git. Mantenha `composer.json`, `composer.lock` e o schema SQL no repositório.
