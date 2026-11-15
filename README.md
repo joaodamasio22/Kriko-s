@@ -12,8 +12,7 @@ Sistema de atendimento com cardápios, pedidos por mesa, fila da cozinha e regis
 | Git | Opcional para quem baixar o ZIP | Clonar e atualizar o projeto |
 | Node.js | 20 ou superior, opcional | Executar os testes do carrinho |
 
-Instale o PHP pelo site oficial do PHP, o Composer pelo site do Composer e o MySQL pelo instalador do MySQL. No Windows, adicione as pastas dos executáveis ao `PATH` e abra um novo terminal depois da instalação.![alt text]({94F82A7C-D889-419B-907B-C618CBE73BC0}.png)
-
+Instale o PHP pelo site oficial do PHP, o Composer pelo site do Composer e o MySQL pelo instalador do MySQL. No Windows, adicione as pastas dos executáveis ao `PATH` e abra um novo terminal depois da instalação.
 O PHP precisa das extensões `pdo_mysql`, `mbstring`, `dom` e `SimpleXML`. Para conferir o PHP que o terminal está usando, execute:
 
 ```text
