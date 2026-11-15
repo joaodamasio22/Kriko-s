@@ -10,7 +10,8 @@ use Kriko\Entity\Mesa;
 class CadastrarMesa extends Handler
 {
     public function __construct(private EntityManager $entityManager)
-    { }
+    {
+    }
 
     public function executar(OperacaoDTO $dto): void
     {
@@ -18,8 +19,7 @@ class CadastrarMesa extends Handler
         $mesa
             ->setNumero_mesa($dto->obter('numeroMesa'))
             ->setDescricao($dto->obter('descricao'))
-            ->setAtivo($dto->obter('ativo', 'S'))
-        ;
+            ->setAtivo($dto->obter('ativo', 'S'));
 
         $this->entityManager->persist($mesa);
         $dto->mesa = $mesa;

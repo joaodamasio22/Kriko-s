@@ -2,14 +2,13 @@
 
 namespace Kriko\Entity;
 
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 class Produto
 {
     private ?int $id = null;
-    private ?Categoria $categoria;
+    private ?Categoria $categoria = null;
     private string $nome;
     private ?string $descricao = null;
     private int $preco;
@@ -22,67 +21,63 @@ class Produto
         $this->itensPedido = new ArrayCollection();
     }
 
-    // Getters
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCategoria(?Categoria $categoria)
+    public function getCategoria(): ?Categoria
     {
         return $this->categoria;
     }
 
-    public function getNome()
+    public function getNome(): string
     {
         return $this->nome;
     }
 
-    public function getdescricao()
+    public function getDescricao(): ?string
     {
         return $this->descricao;
     }
 
-    public function getPreco()
+    public function getPreco(): int
     {
         return $this->preco;
     }
 
-    public function getAtivo()
+    public function getAtivo(): string
     {
         return $this->ativo;
     }
 
-    // Setters
-    public function setCategoria(?Categoria $categoria)
+    public function setCategoria(?Categoria $categoria): self
     {
         $this->categoria = $categoria;
         return $this;
     }
 
-    public function setNome(string $nome)
+    public function setNome(string $nome): self
     {
         $this->nome = $nome;
         return $this;
     }
 
-    public function setDescricao(?string $descricao)
+    public function setDescricao(?string $descricao): self
     {
         $this->descricao = $descricao;
         return $this;
     }
 
-    
-    public function setPreco(int $preco)
+    public function setPreco(int $preco): self
     {
         $this->preco = $preco;
         return $this;
     }
 
-    public function setAtivo(string $ativo)
+    public function setAtivo(string $ativo): self
     {
         $this->ativo = $ativo;
         return $this;
     }
-    
 }

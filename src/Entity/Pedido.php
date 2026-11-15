@@ -16,7 +16,7 @@ class Pedido
     private ?string $status = 'ABERTO';
     private int $valor_total = 0;
     private ?string $forma_pagamento = null;
-    private ?string $status_pagamento = null;
+    private ?string $status_pagamento = 'PENDENTE';
     private ?string $observacao = null;
 
     private Collection $itens_pedido;
@@ -26,8 +26,6 @@ class Pedido
         $this->itens_pedido = new ArrayCollection();
         $this->data_pedido = new DateTime();
     }
-
-    // Getters
 
     public function getId(): ?int
     {
@@ -54,7 +52,7 @@ class Pedido
         return $this->status;
     }
 
-    public function getValorTotal(): ?int
+    public function getValorTotal(): int
     {
         return $this->valor_total;
     }
@@ -79,7 +77,14 @@ class Pedido
         return $this->itens_pedido;
     }
 
-    // Setters
+    public function adicionarItem(ItemPedido $item): self
+    {
+        if (!$this->itens_pedido->contains($item)) {
+            $this->itens_pedido->add($item);
+            $item->setPedido($this);
+        }
+        return $this;
+    }
 
     public function setMesa(?Mesa $mesa): self
     {
@@ -101,18 +106,14 @@ class Pedido
 
     public function setStatus(string $status): self
     {
-        $opcoesValidas = [
-            'ABERTO',
-            'EM_PREPARACAO',
-            'PRONTO',
-            'FINALIZADO',
-            'CANCELADO'
-        ];
+        $opcoesValidas = ['ABERTO', 'EM_PREPARACAO', 'PRONTO', 'FINALIZADO', 'CANCELADO'];
 
         $status = strtoupper($status);
 
         if (!in_array($status, $opcoesValidas, true)) {
-            throw new Exception( "Status inválido. Opções válidas: " . implode(", ", $opcoesValidas));
+            throw new Exception(
+                'Status inválido. Opções válidas: ' . implode(', ', $opcoesValidas),
+            );
         }
 
         $this->status = $status;
@@ -121,20 +122,22 @@ class Pedido
 
     public function setValorTotal(int $valor_total): self
     {
+        if ($valor_total < 0 || $valor_total > 2147483647) {
+            throw new \DomainException('O valor do pedido ultrapassa o limite permitido.');
+        }
         $this->valor_total = $valor_total;
         return $this;
     }
 
     public function setFormaPagamento(string $forma_pagamento): self
     {
-        $opcoesValidas = ['PIX','DINHEIRO','CARTAO_CREDITO','CARTAO_DEBITO'];
+        $opcoesValidas = ['PIX', 'DINHEIRO', 'CARTAO_CREDITO', 'CARTAO_DEBITO'];
 
         $forma_pagamento = strtoupper($forma_pagamento);
 
         if (!in_array($forma_pagamento, $opcoesValidas, true)) {
             throw new Exception(
-                "Forma de pagamento inválida. Opções válidas: " .
-                implode(", ", $opcoesValidas)
+                'Forma de pagamento inválida. Opções válidas: ' . implode(', ', $opcoesValidas),
             );
         }
 
@@ -150,8 +153,7 @@ class Pedido
 
         if (!in_array($status_pagamento, $opcoesValidas, true)) {
             throw new Exception(
-                "Status de pagamento inválido. Opções válidas: " .
-                implode(", ", $opcoesValidas)
+                'Status de pagamento inválido. Opções válidas: ' . implode(', ', $opcoesValidas),
             );
         }
 
@@ -164,5 +166,4 @@ class Pedido
         $this->observacao = $observacao;
         return $this;
     }
-
 }

@@ -25,75 +25,75 @@ class Administrador
         $this->dataCadastro = new \DateTime();
     }
 
-    // Getters
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNome()
+    public function getNome(): string
     {
         return $this->nome;
     }
 
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function getSenha()
+    public function getSenha(): string
     {
         return $this->senha;
     }
 
-    public function getPerfil()
+    public function getPerfil(): string
     {
         return $this->perfil;
     }
 
-    public function getAtivo()
+    public function getAtivo(): string
     {
         return $this->ativo;
     }
 
-    // Setters
-    public function setNome(string $nome)
+    public function setNome(string $nome): self
     {
         $this->nome = $nome;
         return $this;
     }
 
-        public function setEmail(string $email)
-        {
-            $this->email = $email;
-            return $this;
-        }
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+        return $this;
+    }
 
-    public function setSenha(string $senha)
+    public function setSenha(string $senha): self
     {
         $this->senha = $senha;
         return $this;
     }
 
-    public function setPerfil(string $perfil)
+    public function setPerfil(string $perfil): self
     {
         $opcoesValidas = ['MASTER', 'GARCOM', 'COZINHA'];
 
-        if (!in_array($perfil, $opcoesValidas)) {
-            throw new Exception("Perfil inválido. Opções válidas: " . implode(", ", $opcoesValidas));
+        if (!in_array($perfil, $opcoesValidas, true)) {
+            throw new Exception(
+                'Perfil inválido. Opções válidas: ' . implode(', ', $opcoesValidas),
+            );
         }
 
         $this->perfil = $perfil;
         return $this;
     }
 
-    public function setAtivo(string $ativo)
+    public function setAtivo(string $ativo): self
     {
         $this->ativo = $ativo;
         return $this;
     }
 
-    public function setDataCadastro(DateTime $dataCadastro)
+    public function setDataCadastro(DateTime $dataCadastro): self
     {
         $this->dataCadastro = $dataCadastro;
         return $this;

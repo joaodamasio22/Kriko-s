@@ -1,7 +1,9 @@
 {
     "name": "user/kriko-s",
     "autoload": {
-        "psr-4": { "Kriko\\": "src/" }
+        "psr-4": {
+            "Kriko\\": "src/"
+        }
     },
     "authors": [
         {
@@ -14,5 +16,12 @@
         "doctrine/dbal": "^4",
         "symfony/cache": "^7",
         "doctrine/collections": "^3.1"
+    },
+    "scripts": {
+        "test": [
+            "@php tests/pedido.integration.php",
+            "@php tests/regressao.integration.php",
+            "node --test tests/cart.test.cjs"
+        ]
     }
 }

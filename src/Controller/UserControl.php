@@ -10,9 +10,9 @@ class UserControl
 {
     private ChainControl $chainControl;
 
-    public function __construct(private EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager)
     {
-        $this->chainControl = new ChainControl($this->entityManager);
+        $this->chainControl = new ChainControl($entityManager);
     }
 
     public function categoria(array $dados): OperacaoDTO
@@ -38,6 +38,11 @@ class UserControl
     public function pedido(array $dados): OperacaoDTO
     {
         return $this->chainControl->pedido($dados);
+    }
+
+    public function pedidoComItens(array $dados, array $itens): OperacaoDTO
+    {
+        return $this->chainControl->pedidoComItens($dados, $itens);
     }
 
     public function itemPedido(array $dados): OperacaoDTO

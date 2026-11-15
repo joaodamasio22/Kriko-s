@@ -2,81 +2,71 @@
 
 namespace Kriko\Services\ListService\Atualizar;
 
+use DomainException;
 use Kriko\Chain\Handler;
 use Kriko\DTO\OperacaoDTO;
-use Exception;
 
 final class AtualizarPedido extends Handler
 {
-    private array $status_permitido = [
-            'ABERTO',
-            'EM_PREPARACAO',
-            'PRONTO',
-            'FINALIZADO',
-            'CANCELADO'
-        ];
-
-    private array $formas_pagamento = [
-            'PIX',
-            'DINHEIRO',
-            'CARTAO_CREDITO',
-            'CARTAO_DEBITO'
-        ];
-
-    private array $transicoes_status = [
-            'PENDENTE',
-            'PAGO',
-            'ESTORNADO'
-        ];
-
     protected function executar(OperacaoDTO $dto): void
     {
         $pedido = $dto->pedido;
-
-        if ($pedido === null) {
-            throw new Exception('Nenhum pedido foi carregado.');
+        if (!$pedido) {
+            throw new DomainException('Pedido não encontrado.');
         }
 
-        if ($dto->possui('status')) {
-            $novoStatus = $dto->obter('status');
+        $status = $dto->obter('status', $pedido->getStatus());
+        $pagamento = $dto->obter('statusPagamento', $pedido->getStatusPagamento() ?? 'PENDENTE');
+        $forma = $dto->obter('forma_pagamento', $pedido->getFormaPagamento());
 
-            if ($novoStatus === 'FINALIZADO' && $pedido->getStatusPagamento() !== 'PAGO') {
-                throw new Exception('Confirme o recebimento antes de finalizar o pedido.');
-            }
-
-            if (!is_string($novoStatus) || !in_array($novoStatus, $this->status_permitido, true)) {
-                throw new Exception('Status do pedido inválido.');
-            }
-
-            $pedido->setStatus($novoStatus);
-
-            
+        if (
+            !in_array(
+                $status,
+                ['ABERTO', 'EM_PREPARACAO', 'PRONTO', 'FINALIZADO', 'CANCELADO'],
+                true,
+            )
+        ) {
+            throw new DomainException('Status do pedido inválido.');
+        }
+        if (!in_array($pagamento, ['PENDENTE', 'PAGO', 'ESTORNADO'], true)) {
+            throw new DomainException('Status do pagamento inválido.');
+        }
+        if (
+            $dto->possui('forma_pagamento') &&
+            !in_array($forma, ['PIX', 'DINHEIRO', 'CARTAO_CREDITO', 'CARTAO_DEBITO'], true)
+        ) {
+            throw new DomainException('Forma de pagamento inválida.');
+        }
+        if (
+            in_array($pedido->getStatus(), ['FINALIZADO', 'CANCELADO'], true) &&
+            ($status !== $pedido->getStatus() ||
+                $pagamento !== $pedido->getStatusPagamento() ||
+                $forma !== $pedido->getFormaPagamento())
+        ) {
+            throw new DomainException('Não é permitido alterar um pedido encerrado.');
+        }
+        if ($pagamento !== $pedido->getStatusPagamento() && $pagamento !== 'PENDENTE') {
+            throw new DomainException('Confirme o recebimento pela rotina de pagamentos.');
+        }
+        if (
+            $pedido->getStatusPagamento() === 'PAGO' &&
+            ($pagamento !== 'PAGO' ||
+                $forma !== $pedido->getFormaPagamento() ||
+                $status === 'CANCELADO')
+        ) {
+            throw new DomainException('O recebimento já foi confirmado para este pedido.');
+        }
+        if (
+            $status === 'FINALIZADO' &&
+            ($pagamento !== 'PAGO' ||
+                !in_array($pedido->getStatus(), ['PRONTO', 'FINALIZADO'], true))
+        ) {
+            throw new DomainException('Somente pedidos prontos e pagos podem ser finalizados.');
         }
 
-        if ($dto->possui('statusPagamento')) {
-            $novoStatusPagamento = $dto->obter('statusPagamento');
-            if ($pedido->getStatusPagamento() === 'PAGO' && $novoStatusPagamento !== 'PAGO') {
-                throw new Exception('O recebimento já foi confirmado para este pedido.');
-            }
-            if (!is_string($novoStatusPagamento) || !in_array($novoStatusPagamento, $this->transicoes_status, true)) {
-                throw new Exception('Status do pagamento inválido.');
-            }
-            $pedido->setStatusPagamento($novoStatusPagamento);
-        }
-
+        $pedido->setStatus($status)->setStatusPagamento($pagamento);
         if ($dto->possui('forma_pagamento')) {
-
-            $formaPagamento = $dto->obter('forma_pagamento');
-
-            if (!is_string($formaPagamento) || !in_array($formaPagamento, $this->formas_pagamento, true)) {
-                throw new Exception('Forma de pagamento inválida.');
-            }
-
-            if ($pedido->getStatusPagamento() !== 'PENDENTE') {
-                throw new Exception('Não é permitido alterar a forma de pagamento de um pedido já processado.');
-            }
-
-            $pedido->setFormaPagamento($formaPagamento);
+            $pedido->setFormaPagamento($forma);
         }
     }
 }

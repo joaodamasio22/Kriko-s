@@ -10,7 +10,7 @@ class Mesa
     private ?int $id = null;
     private int $numero_mesa;
     private ?string $descricao = null;
-    private string $ativo = 'T';
+    private string $ativo = 'S';
 
     private Collection $pedidos;
 
@@ -19,41 +19,39 @@ class Mesa
         $this->pedidos = new ArrayCollection();
     }
 
-    // Getters
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNumero_mesa()
+    public function getNumero_mesa(): int
     {
         return $this->numero_mesa;
     }
 
-    public function getDescricao()
+    public function getDescricao(): ?string
     {
         return $this->descricao;
     }
 
-    public function getAtivo()
+    public function getAtivo(): string
     {
         return $this->ativo;
     }
 
-    // Setters
-    public function setNumero_mesa(int $numero_mesa)
+    public function setNumero_mesa(int $numero_mesa): self
     {
         $this->numero_mesa = $numero_mesa;
         return $this;
     }
 
-    public function setDescricao(?string $descricao)
+    public function setDescricao(?string $descricao): self
     {
         $this->descricao = $descricao;
         return $this;
     }
 
-    public function setAtivo(string $ativo)
+    public function setAtivo(string $ativo): self
     {
         $this->ativo = $ativo;
         return $this;

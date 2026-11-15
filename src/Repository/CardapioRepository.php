@@ -8,25 +8,37 @@ use InvalidArgumentException;
 
 final class CardapioRepository
 {
+    private const CATEGORIAS = [
+        'pastel' => [
+            ['pastel', 'pastéis', 'pasteis'],
+            ['porções de pastéis', 'porcoes de pasteis', 'porções de pastel', 'porcoes de pastel'],
+        ],
+        'churros' => [['churro', 'churros'], ['porções de churros', 'porcoes de churros']],
+    ];
+
     public function __construct(private readonly Connection $connection)
     {
     }
 
+    public function disponiveis(array $ids): array
+    {
+        if (!$ids) {
+            return [];
+        }
+        $categorias = array_merge(...array_merge(...array_values(self::CATEGORIAS)));
+        return $this->connection->fetchFirstColumn(
+            "SELECT p.id FROM produtos p JOIN categorias c ON c.id = p.categoria
+             WHERE p.id IN (?) AND p.ativo = 'S' AND LOWER(TRIM(c.nome)) IN (?)",
+            [$ids, $categorias],
+            [ArrayParameterType::INTEGER, ArrayParameterType::STRING],
+        );
+    }
+
     public function listar(string $tipo): array
     {
-        [$individuais, $porcoes] = match ($tipo) {
-            'pastel' => [
-                ['pastel', 'pastéis', 'pasteis'],
-                ['porções de pastéis', 'porcoes de pasteis', 'porções de pastel', 'porcoes de pastel'],
-            ],
-            'churros' => [
-                ['churro', 'churros'],
-                ['porções de churros', 'porcoes de churros'],
-            ],
-            default => throw new InvalidArgumentException('Cardápio inválido.'),
-        };
+        [$individuais, $porcoes] =
+            self::CATEGORIAS[$tipo] ?? throw new InvalidArgumentException('Cardápio inválido.');
 
-        // O ranking soma as unidades de pedidos pagos que não foram cancelados.
         $produtos = $this->connection->fetchAllAssociative(
             <<<'SQL'
             SELECT p.id, p.nome, p.descricao, p.preco,
@@ -43,7 +55,8 @@ final class CardapioRepository
             ) v ON v.produto = p.id
             WHERE p.ativo = 'S' AND LOWER(TRIM(c.nome)) IN (:categorias)
             ORDER BY vendidos DESC, p.nome, p.id
-            SQL,
+            SQL
+            ,
             ['porcoes' => $porcoes, 'categorias' => array_merge($individuais, $porcoes)],
             ['porcoes' => ArrayParameterType::STRING, 'categorias' => ArrayParameterType::STRING],
         );

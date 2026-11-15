@@ -17,11 +17,11 @@
         <field name="valor_total" column="valor_total" type="integer" />
         <field name="observacao" column="observacao" type="text" nullable="true" />
 
-        <many-to-one field="mesa" target-entity="Kriko\Entity\Mesa">
+        <many-to-one field="mesa" target-entity="Kriko\Entity\Mesa" inversed-by="pedidos">
             <join-column name="mesa" referenced-column-name="id" />
         </many-to-one>
 
-        <many-to-one field="admin" target-entity="Kriko\Entity\Administrador">
+        <many-to-one field="admin" target-entity="Kriko\Entity\Administrador" inversed-by="pedidos">
             <join-column name="admin" referenced-column-name="id" />
         </many-to-one>
 

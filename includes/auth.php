@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/helpers.php';
+
 require_once __DIR__ . '/session.php';
 
 function krikosDestino(string $perfil): string
@@ -17,7 +19,7 @@ function krikosExigirPerfil(array $perfis): void
     $perfil = $_SESSION['krikos_usuario']['perfil'] ?? '';
     if (!in_array($perfil, $perfis, true)) {
         header('Location: ' . krikosDestino($perfil), true, 302);
-        exit;
+        exit();
     }
     header('Cache-Control: no-store');
 }

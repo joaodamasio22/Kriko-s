@@ -10,9 +10,7 @@ class ItemPedido
     private ?Pedido $pedido = null;
     private ?Produto $produto = null;
     private int $quantidade = 1;
-    private string $preco_unitario = '0.00';
-
-    // Getters
+    private int $preco_unitario = 0;
 
     public function getId(): ?int
     {
@@ -34,45 +32,41 @@ class ItemPedido
         return $this->quantidade;
     }
 
-    public function getPrecoUnitario(): string
+    public function getPrecoUnitario(): int
     {
         return $this->preco_unitario;
     }
 
-    public function getSubtotal(): string
+    public function getSubtotal(): int
     {
-        $subtotal = $this->quantidade * (float) $this->preco_unitario;
-
-        return number_format($subtotal, 2, '.', '');
+        return $this->quantidade * $this->preco_unitario;
     }
 
-    // Setters
-
-    public function setPedido(?Pedido $pedido)
+    public function setPedido(?Pedido $pedido): self
     {
         $this->pedido = $pedido;
         return $this;
     }
 
-    public function setProduto(?Produto $produto)
+    public function setProduto(?Produto $produto): self
     {
         $this->produto = $produto;
         return $this;
     }
 
-    public function setQuantidade(int $quantidade)
+    public function setQuantidade(int $quantidade): self
     {
         if ($quantidade <= 0) {
-            throw new InvalidArgumentException("A quantidade deve ser maior que zero.");
+            throw new InvalidArgumentException('A quantidade deve ser maior que zero.');
         }
 
         $this->quantidade = $quantidade;
         return $this;
     }
 
-    public function setPrecoUnitario(string $preco_unitario)
+    public function setPrecoUnitario(int $preco_unitario): self
     {
-        $this->preco_unitario = number_format((float) $preco_unitario, 2, '.', '');
+        $this->preco_unitario = $preco_unitario;
         return $this;
     }
 }

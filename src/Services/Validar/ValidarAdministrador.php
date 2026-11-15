@@ -2,11 +2,12 @@
 
 namespace Kriko\Services\Validar;
 
-use Exception;
+use DomainException;
 use Kriko\Chain\Handler;
 use Kriko\DTO\OperacaoDTO;
 
-class ValidarAdministrador extends Handler {
+class ValidarAdministrador extends Handler
+{
     protected function executar(OperacaoDTO $dto): void
     {
         $nome = $dto->obter('nome');
@@ -15,19 +16,26 @@ class ValidarAdministrador extends Handler {
         $perfil = $dto->obter('perfil');
 
         if (!is_string($nome) || trim($nome) === '' || mb_strlen($nome) > 100) {
-            throw new Exception('Nome do administrador inválido.');
+            throw new DomainException('Nome do administrador inválido.');
         }
 
-        if (!is_string($email) || mb_strlen($email) > 150) {
-            throw new Exception('E-mail do administrador inválido.');
+        if (
+            !is_string($email) ||
+            !filter_var($email, FILTER_VALIDATE_EMAIL) ||
+            mb_strlen($email) > 150
+        ) {
+            throw new DomainException('E-mail do administrador inválido.');
         }
 
         if (!is_string($senha) || strlen($senha) < 8) {
-            throw new Exception('Senha deve ter ao menos 8 caracteres.');
+            throw new DomainException('Senha deve ter ao menos 8 caracteres.');
         }
 
         if (!in_array($perfil, ['MASTER', 'GARCOM', 'COZINHA'], true)) {
-            throw new Exception('Perfil inválido.');
+            throw new DomainException('Perfil inválido.');
+        }
+        if (!in_array($dto->obter('ativo', 'S'), ['S', 'N'], true)) {
+            throw new DomainException('Campo ativo inválido.');
         }
     }
 }

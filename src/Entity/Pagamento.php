@@ -8,9 +8,9 @@ class Pagamento
 {
     private ?int $id = null;
     private ?Pedido $pedido = null;
-    private ?int $valor;
-    private ?string $metodo;
-    private ?string $status;
+    private int $valor = 0;
+    private ?string $metodo = null;
+    private ?string $status = 'PENDENTE';
     private ?DateTime $data_criacao = null;
     private ?DateTime $data_pagamento = null;
     private ?string $referencia = null;
@@ -19,31 +19,29 @@ class Pagamento
     {
         $this->data_criacao = new DateTime();
         $this->data_pagamento = null;
-
     }
 
-    // Getters
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPedido()
+    public function getPedido(): ?Pedido
     {
         return $this->pedido;
     }
 
-    public function getValorTotal()
+    public function getValorTotal(): int
     {
         return $this->valor;
     }
 
-    public function getMetodo()
+    public function getMetodo(): ?string
     {
         return $this->metodo;
     }
 
-    public function getStatus()
+    public function getStatus(): ?string
     {
         return $this->status;
     }
@@ -52,42 +50,43 @@ class Pagamento
     {
         return $this->data_criacao;
     }
-    
-    public function getDataPagamento()
+
+    public function getDataPagamento(): ?DateTime
     {
         return $this->data_pagamento;
     }
 
-    public function getReferencia()
+    public function getReferencia(): ?string
     {
         return $this->referencia;
     }
 
-    // Setters
-    public function setPedido(?Pedido $pedido)
+    public function setPedido(?Pedido $pedido): self
     {
         $this->pedido = $pedido;
         return $this;
     }
 
-    public function setValor(float $valor)
+    public function setValor(int $valor): self
     {
         $this->valor = $valor;
         return $this;
     }
 
-    public function setMetodo(string $metodo)
+    public function setMetodo(string $metodo): self
     {
         $this->metodo = $metodo;
         return $this;
     }
 
-    public function setStatus(string $status)
+    public function setStatus(string $status): self
     {
-        $opcoesValidaes = ['PENDENTE', 'APROVADO', "RECUSADO",'CANCELADO'];
-        
-        if(!in_array($status, $opcoesValidaes)) {
-            throw new \InvalidArgumentException("Status inválido. Opções válidas: " . implode(", ", $opcoesValidaes));
+        $opcoesValidas = ['PENDENTE', 'APROVADO', 'RECUSADO', 'CANCELADO'];
+
+        if (!in_array($status, $opcoesValidas, true)) {
+            throw new \InvalidArgumentException(
+                'Status inválido. Opções válidas: ' . implode(', ', $opcoesValidas),
+            );
         }
 
         $this->status = $status;
@@ -100,16 +99,15 @@ class Pagamento
         return $this;
     }
 
-    public function setDataPagamento(DateTime $data_pagamento)
+    public function setDataPagamento(DateTime $data_pagamento): self
     {
         $this->data_pagamento = $data_pagamento;
         return $this;
     }
 
-    public function setReferencia(?string $referencia)
+    public function setReferencia(?string $referencia): self
     {
         $this->referencia = $referencia;
         return $this;
     }
-
 }

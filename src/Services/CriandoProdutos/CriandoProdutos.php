@@ -3,29 +3,35 @@
 namespace Kriko\Services\CriandoProdutos;
 
 use Doctrine\ORM\EntityManager;
+use Kriko\DTO\OperacaoDTO;
 use Kriko\Controller\UserControl;
 
-class CriandoProdutos {
-    public function __construct(private readonly EntityManager $entityManager)
-    { }
+class CriandoProdutos
+{
+    private readonly UserControl $controle;
 
-    public function criarCategoria(array $dados)
+    public function __construct(EntityManager $entityManager)
     {
-        (new UserControl($this->entityManager))->categoria($dados);
+        $this->controle = new UserControl($entityManager);
     }
 
-    public function criarMesa(array $dados)
+    public function criarCategoria(array $dados): OperacaoDTO
     {
-        (new UserControl($this->entityManager))->mesa($dados);
+        return $this->controle->categoria($dados);
     }
 
-    public function criarAdministrador(array $dados)
+    public function criarMesa(array $dados): OperacaoDTO
     {
-        (new UserControl($this->entityManager))->administrador($dados);
+        return $this->controle->mesa($dados);
     }
 
-    public function criarProduto(array $dados)
+    public function criarAdministrador(array $dados): OperacaoDTO
     {
-        (new UserControl($this->entityManager))->produto($dados);
+        return $this->controle->administrador($dados);
+    }
+
+    public function criarProduto(array $dados): OperacaoDTO
+    {
+        return $this->controle->produto($dados);
     }
 }

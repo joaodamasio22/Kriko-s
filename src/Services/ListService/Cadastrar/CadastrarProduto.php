@@ -10,7 +10,8 @@ use Kriko\Entity\Produto;
 class CadastrarProduto extends Handler
 {
     public function __construct(private EntityManager $entityManager)
-    { }
+    {
+    }
 
     protected function executar(OperacaoDTO $dto): void
     {
@@ -20,7 +21,7 @@ class CadastrarProduto extends Handler
         $produto->setNome($dto->obter('nome'));
         $produto->setDescricao($dto->obter('descricao'));
         $produto->setPreco($dto->obter('preco'));
-        $produto->setAtivo($dto->obter('ativo'));
+        $produto->setAtivo($dto->obter('ativo', 'S'));
 
         $this->entityManager->persist($produto);
 

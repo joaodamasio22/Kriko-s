@@ -10,7 +10,7 @@
         </id>
 
         <field name="nome" type="string" column="nome" length="50" />
-        <field name="descricao" type="string" column="descricao" length="255" />
+        <field name="descricao" type="string" column="descricao" length="255" nullable="true" />
 
         <one-to-many field="produtos" target-entity="Kriko\Entity\Produto" mapped-by="categoria"/>
         
