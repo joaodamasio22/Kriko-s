@@ -24,11 +24,11 @@ $config->setProxyNamespace('Kriko\Proxies');
 // O site e os serviços do backend usam a mesma configuração de banco.
 $param = [
     'driver' => 'pdo_mysql',
-    'host' => getenv('KRIKOS_DB_HOST') ?: '127.0.0.1',
-    'port' => (int) (getenv('KRIKOS_DB_PORT') ?: 3306),
-    'user' => getenv('KRIKOS_DB_USER') ?: 'root',
-    'password' => getenv('KRIKOS_DB_PASSWORD') ?: '',
-    'dbname' => getenv('KRIKOS_DB_NAME') ?: 'krikos_db',
+    'host' => '127.0.0.1',
+    'port' => 3307,
+    'user' => 'root',
+    'password' => '',
+    'dbname' => 'krikos_db',
     'charset' => 'utf8mb4',
 ];
 

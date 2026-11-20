@@ -3,11 +3,14 @@
 use Kriko\Services\Autenticacao;
 
 require_once dirname(__DIR__) . '/includes/auth.php';
+header('Cache-Control: no-store');
 
-if (isset($_SESSION['krikos_usuario'])) {
-    header('Location: ' . krikosDestino($_SESSION['krikos_usuario']['perfil']), true, 302);
+$perfil = krikosPerfilAutenticado();
+if ($perfil !== null) {
+    header('Location: ' . krikosDestino($perfil), true, 302);
     exit();
 }
+unset($_SESSION['krikos_usuario']);
 
 $erro = '';
 $mensagem = $_SESSION['painel_mensagem'] ?? '';
@@ -25,10 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             postTexto('email'),
             is_string($_POST['senha'] ?? null) ? $_POST['senha'] : '',
         );
+        $destino = krikosDestino($usuario['perfil']);
+        if ($destino === null) {
+            throw new DomainException('Seu acesso está sem um perfil válido.');
+        }
         session_regenerate_id(true);
         $_SESSION['krikos_usuario'] = $usuario;
         $_SESSION['krikos_csrf'] = bin2hex(random_bytes(32));
-        header('Location: ' . krikosDestino($usuario['perfil']), true, 303);
+        header('Location: ' . $destino, true, 303);
         exit();
     } catch (Throwable $falha) {
         error_log('Login Krikos: ' . $falha->getMessage());

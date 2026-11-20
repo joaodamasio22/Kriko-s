@@ -18,11 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     responder(405, ['erro' => 'Método não permitido.']);
 }
 
-require_once dirname(__DIR__, 2) . '/includes/session.php';
-require_once dirname(__DIR__, 2) . '/includes/helpers.php';
+require_once dirname(__DIR__, 2) . '/includes/auth.php';
 
-if (($_SESSION['krikos_usuario']['perfil'] ?? '') !== 'GARCOM') {
-    responder(isset($_SESSION['krikos_usuario']) ? 403 : 401, [
+$perfil = krikosPerfilAutenticado();
+if ($perfil !== 'GARCOM') {
+    responder($perfil === null ? 401 : 403, [
         'erro' => 'Entre com um acesso de garçom para registrar pedidos.',
     ]);
 }

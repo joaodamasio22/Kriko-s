@@ -30,7 +30,7 @@ class Element {
     }
 }
 
-function page(storage, product, fetch) {
+function page(storage, product, fetch, location = {}) {
     const nodes = Object.fromEntries(
         [
             'pedidoForm',
@@ -84,6 +84,7 @@ function page(storage, product, fetch) {
         },
         fetch,
         Intl,
+        window: { location },
     });
     return { nodes, fields, form, add };
 }
@@ -131,6 +132,19 @@ test('mantém o carrinho após erro da API e permite reenviar', async () => {
     assert.equal(current.nodes.pedidoQuantidade.textContent, '1');
     assert.equal(current.nodes.pedidoEnviar.disabled, false);
     assert.equal(current.nodes.pedidoMensagem.textContent, 'Mesa inválida');
+    assert.equal(JSON.parse(storage.get('cart-test')).itens.length, 1);
+});
+
+test('volta para o login ao enviar um pedido com sessão expirada', async () => {
+    const storage = new Map();
+    const destinos = [];
+    const current = page(storage, pastel, async () => ({ ok: false, status: 401 }), {
+        replace: (destino) => destinos.push(destino),
+    });
+    await current.add.fire('click');
+    await current.form.fire('submit');
+
+    assert.deepEqual(destinos, ['painel.php']);
     assert.equal(JSON.parse(storage.get('cart-test')).itens.length, 1);
 });
 

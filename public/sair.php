@@ -1,9 +1,7 @@
 <?php
 
-require_once dirname(__DIR__) . '/includes/helpers.php';
-
-require_once dirname(__DIR__) . '/includes/session.php';
-header('Cache-Control: no-store');
+require_once dirname(__DIR__) . '/includes/auth.php';
+krikosExigirLogin();
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     header('Allow: POST');

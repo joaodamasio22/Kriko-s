@@ -174,6 +174,6 @@ require __DIR__ . '/header.php';
         </div>
     </div>
 </main>
-<script src="assets/cardapio.js?v=15" defer></script>
+<script src="assets/cardapio.js?v=16" defer></script>
 
 <?php require __DIR__ . '/footer.php'; ?>

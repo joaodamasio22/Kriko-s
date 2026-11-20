@@ -213,6 +213,10 @@ if (pedidoForm) {
                     })),
                 }),
             });
+            if (resposta.status === 401) {
+                window.location.replace('painel.php');
+                return;
+            }
             const resultado = await resposta.json().catch(() => {
                 throw new Error(
                     'O servidor retornou uma resposta inválida. Seu carrinho foi mantido.',
