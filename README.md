@@ -1,21 +1,39 @@
-# Kriko’s — Pastéis e Churros
+# Kriko’s — Sistema de gerenciamento de pedidos
 
-Sistema de atendimento com cardápios, pedidos por mesa, fila da cozinha e registro de pagamentos presenciais. Desenvolvido em PHP, Doctrine ORM, MySQL e Bootstrap.
+Sistema desenvolvido para uma pastelaria e churreria, com cardápio digital, gerenciamento de pedidos por mesa, fila de preparo e registro de pagamentos presenciais.
 
-## 1. O que instalar
+## Funcionalidades
 
-| Ferramenta | Requisito | Uso |
-| --- | --- | --- |
-| PHP | 8.4.1 ou superior | Executar o sistema |
-| Composer | 2.x | Instalar as dependências PHP |
-| MySQL | 8.0 ou superior, ou MariaDB compatível com o schema | Armazenar os dados |
-| Git | Opcional para quem baixar o ZIP | Clonar e atualizar o projeto |
-| Node.js | 20 ou superior, opcional | Executar os testes do carrinho |
+- Autenticação e controle de acesso por perfil (Master, Garçom e Cozinha).
+- Cadastro de categorias, produtos, mesas e usuários da equipe.
+- Cardápios digitais de pastéis e churros com carrinho dinâmico.
+- Registro de pedidos e seus itens no banco de dados.
+- Acompanhamento do preparo pela cozinha.
+- Confirmação de pagamentos presenciais via Pix, dinheiro ou cartão.
+- Exibição dos produtos mais vendidos.
 
-Instale o PHP pelo site oficial do PHP, o Composer pelo site do Composer e o MySQL pelo instalador do MySQL. No Windows, adicione as pastas dos executáveis ao `PATH` e abra um novo terminal depois da instalação.
-O PHP precisa das extensões `pdo_mysql`, `mbstring`, `dom` e `SimpleXML`. Para conferir o PHP que o terminal está usando, execute:
+## Tecnologias utilizadas
 
-```text
+PHP orientado a objetos, MySQL, Doctrine ORM 3, Doctrine DBAL 4, mapeamento XML, Composer, HTML5, CSS3, JavaScript e Bootstrap. O backend utiliza DTO (Data Transfer Object), Chain of Responsibility e Repository.
+
+## 1. Requisitos mínimos
+
+| Ferramenta | Requisito |
+| --- | --- |
+| PHP | 8.4.1 ou superior, em versão compatível com as dependências |
+| Composer | 2.x |
+| MySQL | 8.0.16 ou superior recomendado (suporte às restrições CHECK) |
+| Git | Necessário para clonar; opcional se baixar o ZIP |
+| Navegador | Chrome, Firefox, Edge ou equivalente atualizado |
+| Node.js | 20 ou superior recomendado; somente para testes JavaScript |
+
+MariaDB pode ser utilizado caso seja compatível com o schema SQL, mas não foi validado nesta revisão.
+
+Extensões PHP necessárias: `pdo`, `pdo_mysql`, `mbstring`, `dom`, `SimpleXML`, `xml`, `ctype`, `iconv`, `session` e `json` (algumas já fazem parte da instalação padrão).
+
+Confira o ambiente:
+
+```bash
 php -v
 php --ini
 php -m
@@ -23,97 +41,82 @@ composer --version
 mysql --version
 ```
 
-Se uma extensão estiver desabilitada, edite o `php.ini` indicado por `php --ini`. No Windows, habilite as extensões disponíveis removendo o `;` no início das linhas correspondentes, por exemplo `extension=pdo_mysql` e `extension=mbstring`. Algumas extensões já vêm habilitadas na distribuição do PHP.
+No Windows, verifique se os executáveis estão no PATH e se o PHP utilizado no terminal atende à versão mínima. Não é necessário instalar Apache, executar `npm install` ou utilizar Docker. Os arquivos do Bootstrap já estão incluídos no projeto.
 
-Não é necessário instalar Apache nem executar `npm install` para usar o sistema. O Bootstrap e os arquivos do frontend já estão em `public/assets/`.
+## 2. Baixar o projeto
 
-## 2. Baixar o projeto e instalar as dependências
-
-Clone o repositório, substituindo o endereço abaixo pelo endereço deste projeto:
-
-```text
-git clone <URL_DO_REPOSITORIO> Kriko-s
+```bash
+git clone https://github.com/joaodamasio22/Kriko-s.git
 cd Kriko-s
+```
+
+Alternativamente, baixe o ZIP do repositório, extraia-o e abra o terminal na pasta que contém `composer.json`.
+
+## 3. Instalar as dependências
+
+```bash
 composer install
 composer check-platform-reqs
 ```
 
-Se preferir baixar o ZIP, extraia os arquivos, abra o terminal na pasta que contém `composer.json` e execute os dois comandos do Composer.
+O Composer criará a pasta `vendor/` e instalará as versões registradas em `composer.lock`. Não utilize `composer update` como etapa obrigatória de instalação.
 
-Use `composer install` para instalar as versões registradas em `composer.lock`. A pasta `vendor/` será criada automaticamente. O arquivo `composer.lock` deve continuar no repositório para que outras pessoas instalem as mesmas versões.
+## 4. Criar o banco de dados
 
-## 3. Criar o banco
-
-Inicie o serviço do MySQL ou MariaDB antes de continuar. No Windows, use o aplicativo **Serviços**; o nome do serviço depende da instalação, como `MySQL80`.
-
-Na raiz do projeto, abra o cliente do MySQL:
+Inicie o serviço MySQL. O script de criação está em:
 
 ```text
-mysql -u root -p
+src/Repository/Schema/SchemaDb.sql
 ```
 
-Digite a senha definida na instalação. Dentro do console do MySQL, execute:
+Na raiz do projeto, abra o cliente MySQL (ajuste a porta conforme sua instalação):
+
+```bash
+mysql -h 127.0.0.1 -P 3307 -u root -p
+```
+
+Informe a senha do seu banco; se estiver vazia, pressione Enter. Dentro do console MySQL, execute:
 
 ```sql
 SOURCE src/Repository/Schema/SchemaDb.sql;
 SHOW TABLES FROM krikos_db;
 ```
 
-O script cria o banco `krikos_db` e suas tabelas. Execute essa importação uma única vez em um ambiente novo. Se as tabelas já existirem, utilize o banco existente; o script não é uma migração nem uma restauração de dados.
+Também é possível executar o arquivo pelo MySQL Workbench ou phpMyAdmin.
 
-Também é possível abrir e executar `src/Repository/Schema/SchemaDb.sql` no MySQL Workbench ou importar o arquivo pelo phpMyAdmin.
+O script cria o banco `krikos_db` e sete tabelas: `administradores`, `mesas`, `categorias`, `produtos`, `pedidos`, `itens_pedido` e `pagamentos`. Execute em um banco novo: o script não é uma migração e não deve ser reaplicado sobre tabelas existentes.
 
-O usuário usado na importação precisa de permissão para criar o banco e as tabelas. Para usar outro nome de banco, ajuste as instruções `CREATE DATABASE` e `USE` do script antes da importação e configure `KRIKOS_DB_NAME` com esse mesmo nome.
+## 5. Configurar a conexão
 
-## 4. Configurar a conexão
+Abra `bootstrap.php`, na raiz do projeto. Ajuste os parâmetros da conexão para o seu ambiente:
 
-A configuração fica em `bootstrap.php` e lê as seguintes variáveis de ambiente:
-
-| Variável | Valor padrão |
-| --- | --- |
-| `KRIKOS_DB_HOST` | `127.0.0.1` |
-| `KRIKOS_DB_PORT` | `3306` |
-| `KRIKOS_DB_NAME` | `krikos_db` |
-| `KRIKOS_DB_USER` | `root` |
-| `KRIKOS_DB_PASSWORD` | Senha vazia |
-
-Defina os valores no mesmo terminal em que vai executar o sistema. Use o usuário e a senha do seu banco.
-
-### Windows — PowerShell
-
-```powershell
-$env:KRIKOS_DB_HOST = '127.0.0.1'
-$env:KRIKOS_DB_PORT = '3306'
-$env:KRIKOS_DB_NAME = 'krikos_db'
-$env:KRIKOS_DB_USER = 'root'
-$env:KRIKOS_DB_PASSWORD = 'SUA_SENHA_DO_MYSQL'
+```php
+$param = [
+    'driver' => 'pdo_mysql',
+    'host' => '127.0.0.1',
+    'port' => 3307,
+    'user' => 'root',
+    'password' => '',
+    'dbname' => 'krikos_db',
+    'charset' => 'utf8mb4',
+];
 ```
 
-### Linux e macOS — Bash ou Zsh
+A porta configurada no repositório é **3307**. Se o MySQL estiver utilizando a porta padrão **3306**, altere `port` e use a mesma porta ao importar o banco. Ajuste também o usuário e a senha.
+
+O código atual não lê variáveis de ambiente para a conexão nem carrega `.env` automaticamente. Não publique credenciais pessoais no GitHub. Para uso além do ambiente local, utilize um usuário de banco dedicado e uma configuração de credenciais segura.
+
+## 6. Criar o primeiro usuário Master
+
+O schema não inclui dados iniciais. Antes de acessar o sistema, crie um administrador.
+
+Gere um hash para uma senha de sua escolha (mínimo de oito caracteres):
 
 ```bash
-export KRIKOS_DB_HOST='127.0.0.1'
-export KRIKOS_DB_PORT='3306'
-export KRIKOS_DB_NAME='krikos_db'
-export KRIKOS_DB_USER='root'
-export KRIKOS_DB_PASSWORD='SUA_SENHA_DO_MYSQL'
-```
-
-Essas configurações valem para o terminal atual e os processos iniciados por ele. Ao abrir outro terminal, configure as variáveis novamente ou cadastre-as nas configurações de ambiente do sistema operacional.
-
-**O projeto não carrega arquivos `.env` automaticamente.** Criar esse arquivo não configura a conexão. Não coloque senhas pessoais no código nem envie suas configurações locais para o Git.
-
-## 5. Criar o primeiro acesso Master
-
-O banco novo não contém usuários, produtos nem mesas. Para cadastrar o primeiro usuário, gere um hash de senha no terminal:
-
-```text
 php -r "echo password_hash('TroqueEstaSenha123!', PASSWORD_DEFAULT), PHP_EOL;"
 ```
 
-Substitua `TroqueEstaSenha123!` pela senha que você vai usar, com pelo menos oito caracteres. Copie o hash completo exibido.
-
-No cliente do MySQL ou no Workbench, selecione o banco configurado e execute o SQL abaixo. Substitua o nome, o e-mail e `COLE_AQUI_O_HASH` pelos seus dados; mantenha o hash entre aspas simples.
+Substitua a senha de exemplo por uma senha própria. Copie o hash completo e execute no MySQL:
 
 ```sql
 USE krikos_db;
@@ -122,110 +125,96 @@ INSERT INTO administradores (nome, email, senha, perfil, ativo)
 VALUES ('Administrador', 'admin@example.com', 'COLE_AQUI_O_HASH', 'MASTER', 'S');
 ```
 
-O login usa o e-mail informado no cadastro e a senha original, não o hash. Esse procedimento só é necessário para o primeiro acesso; depois, o Master pode cadastrar os demais usuários pelo sistema.
+Substitua o e-mail e o marcador do hash pelos seus dados. No login, utilize a senha original, não o hash. Os demais usuários podem ser cadastrados pelo painel Master.
 
-## 6. Iniciar o sistema
+## 7. Executar o projeto
 
-Execute os comandos na raiz do projeto, com as variáveis do banco já configuradas.
+Na raiz do projeto, execute:
 
-```text
+```bash
 php -S 127.0.0.1:8765 -t public
 ```
 
-O comando funciona no Windows, Linux e macOS. Abra **http://127.0.0.1:8765** no navegador. A página inicial direciona para o login.
+Abra no navegador: **http://127.0.0.1:8765**.
 
-Se a porta estiver ocupada, escolha outra, por exemplo:
+O sistema direcionará para a tela de login. Mantenha o terminal e o MySQL em execução. Para encerrar o servidor, pressione `Ctrl+C`.
+
+Caso a porta esteja ocupada, utilize outra, como `8766`, e ajuste o endereço no navegador. A raiz pública deve ser `public/`. O servidor embutido do PHP é destinado ao desenvolvimento local, não à produção.
+
+## 8. Utilizar o sistema
+
+Entre como Master e cadastre:
+
+1. Categorias com os nomes `Pastel` (ou `Pastéis`) e `Churros`. Para porções, utilize `Porções de pastéis` e `Porções de churros`.
+2. Produtos ativos associados às categorias. Informe os preços em reais no formulário; o banco armazena valores em centavos inteiros.
+3. Mesas ativas com números únicos.
+4. Usuários com os perfis `GARCOM` e `COZINHA`.
+
+| Perfil | Página | Responsabilidade |
+| --- | --- | --- |
+| MASTER | `master.php` | Cadastros, confirmação de pagamentos e finalização de pedidos |
+| GARCOM | `index.php` | Cardápios, carrinho, envio de pedidos, pagamentos e finalização |
+| COZINHA | `cozinha.php` | Fila de pedidos, início do preparo e marcação como pronto |
+
+Para testar o fluxo completo, entre como Garçom, selecione os produtos, informe uma mesa ativa e envie o pedido. Entre como Cozinha, atualize a fila e marque o pedido como pronto após o preparo. Por fim, como Garçom ou Master, acesse Pedidos e pagamentos, confirme o recebimento e finalize o pedido.
+
+O sistema registra pagamentos presenciais; não efetua cobranças online nem integra diretamente com operadoras de cartão ou Pix. A recuperação de senha apresenta contatos de suporte, sem redefinição automática.
+
+## 9. Estrutura do projeto
 
 ```text
-php -S 127.0.0.1:8766 -t public
+Kriko-s/
+├── bin/control              # Console do Doctrine
+├── config/xml/              # Mapeamento das entidades
+├── includes/                # Sessão, autenticação e componentes compartilhados
+├── public/                  # Páginas, API e recursos do frontend
+│   ├── api/pedidos.php       # Recebimento do carrinho em JSON
+│   └── assets/              # JavaScript e bibliotecas locais
+├── src/
+│   ├── Chain/               # Chain of Responsibility
+│   ├── Controller/          # Controle das operações
+│   ├── DTO/                 # Transporte de dados
+│   ├── Entity/              # Entidades do Doctrine
+│   ├── Repository/          # Consultas e schema SQL
+│   └── Services/            # Regras de negócio e validações
+├── tests/                   # Testes de integração e do carrinho
+├── bootstrap.php            # Inicialização e conexão com o banco
+├── composer.json
+└── composer.lock
 ```
 
-Nesse caso, abra **http://127.0.0.1:8766**.
+## 10. Testes e validação
 
-Mantenha o terminal aberto durante o uso. Para encerrar o servidor, pressione `Ctrl+C`. O MySQL também precisa continuar em execução.
+Com as dependências instaladas, banco de desenvolvimento configurado e Node.js disponível:
 
-A raiz pública é a pasta `public/`. O servidor embutido do PHP serve para desenvolvimento local; uma hospedagem deve configurar seu servidor web para essa pasta.
-
-## 7. Configurar os cadastros e usar o sistema
-
-Entre com o perfil `MASTER` e cadastre:
-
-1. Categorias: `Pastel` ou `Pastéis`, e `Churros`. Para porções, use `Porções de pastéis` e `Porções de churros`.
-2. Produtos nas categorias correspondentes, com status ativo. Informe o preço em reais no formulário; o banco armazena centavos inteiros.
-3. Mesas ativas, com números únicos.
-4. Acessos da equipe na seção **Acessos**, escolhendo o perfil adequado.
-
-| Perfil | Tela inicial | Funções |
-| --- | --- | --- |
-| `MASTER` | `master.php` | Cadastrar categorias, produtos, mesas e acessos; receber e finalizar pedidos |
-| `GARCOM` | `index.php` | Consultar cardápios, enviar pedidos por mesa, receber e finalizar pedidos |
-| `COZINHA` | `cozinha.php` | Consultar a fila, iniciar o preparo e marcar pedidos como prontos |
-
-O garçom adiciona produtos ao carrinho, informa uma mesa ativa e envia o pedido. Pastéis e churros podem estar no mesmo pedido; o carrinho, a mesa e as observações são preservados ao trocar de cardápio na mesma aba.
-
-Na cozinha, use **Atualizar fila** para consultar novos pedidos. Depois de marcar um pedido como **Pronto**, o garçom ou Master abre **Pedidos e pagamentos**, confirma o valor recebido e escolhe a forma de pagamento. Após a confirmação, fica disponível a ação **Finalizar pedido**.
-
-O sistema registra recebimentos presenciais. Selecionar Pix ou cartão não realiza uma cobrança online. A seção **Mais vendidos** considera as quantidades de pedidos pagos que não foram cancelados.
-
-## 8. Contatos opcionais
-
-As variáveis abaixo ativam os contatos do cardápio e da recuperação de acesso:
-
-| Variável | Formato | Uso |
-| --- | --- | --- |
-| `KRIKOS_WHATSAPP` | País, DDD e número, apenas dígitos | Botão de WhatsApp e contato de suporte |
-| `KRIKOS_INSTAGRAM` | Nome do perfil | Botão do Instagram |
-| `KRIKOS_SUPPORT_EMAIL` | E-mail válido | Suporte quando o WhatsApp não está configurado |
-
-Configure-as como as variáveis do banco, antes de iniciar o servidor. A tela **Esqueci minha senha** apresenta o contato de suporte; ela não envia mensagens nem redefine a senha automaticamente.
-
-## 9. Testes
-
-Com o banco configurado e o Node.js instalado, execute:
-
-```text
+```bash
 composer test
 ```
 
-Para executar as verificações separadamente:
+Para executar separadamente:
 
-```text
+```bash
 php tests/pedido.integration.php
 php tests/regressao.integration.php
 node --test tests/cart.test.cjs
 php bin/control orm:validate-schema --skip-sync
 ```
 
-Os testes PHP usam o banco configurado, criam registros temporários e desfazem suas transações ao terminar. Prefira um banco de desenvolvimento. O comando de validação do Doctrine confere os mapeamentos sem alterar as tabelas; `--skip-sync` não compara o schema do banco.
+Os testes PHP utilizam o banco configurado e trabalham com transações para desfazer registros de teste. Utilize um banco de desenvolvimento. O comando Doctrine acima valida os mapeamentos sem comparar a estrutura física do banco. Para comparar também o schema, execute `php bin/control orm:validate-schema`.
 
-## 10. Problemas comuns
+## Problemas comuns
 
-| Problema | Como resolver |
+| Erro | Solução |
 | --- | --- |
-| `php`, `composer` ou `mysql` não reconhecido | Confira a instalação e o `PATH`; depois abra outro terminal. |
-| PHP abaixo de 8.4.1 | Instale uma versão compatível e confira qual executável aparece em `php -v`. |
-| `could not find driver` | Habilite `pdo_mysql` no `php.ini` usado pelo terminal e reinicie o servidor PHP. |
-| `vendor/autoload.php` não encontrado | Execute `composer install` na raiz do projeto. |
+| PHP abaixo de 8.4.1 | Atualize o PHP e confira `php -v`. |
+| `could not find driver` | Habilite `pdo_mysql` no PHP utilizado pelo terminal. |
+| `vendor/autoload.php` não encontrado | Execute `composer install`. |
 | `Access denied` | Confira usuário, senha e permissões do MySQL. |
-| Conexão recusada | Inicie o MySQL e confira host e porta. |
-| Banco ou tabela não encontrado | Confira `KRIKOS_DB_NAME` e a importação do schema. |
-| Porta em uso | Escolha outra porta ao iniciar o servidor. |
-| Cardápio vazio | Confira se existem produtos ativos e se os nomes das categorias correspondem aos descritos acima. |
-| Login não funciona | Confira e-mail, senha original, perfil e campo `ativo = 'S'` no cadastro. |
+| Conexão recusada | Inicie o MySQL e confira a porta em `bootstrap.php`. |
+| Banco ou tabela inexistente | Importe o schema SQL e confira `dbname`. |
+| Cardápio vazio | Cadastre produtos ativos nas categorias reconhecidas. |
+| Login inválido | Confira o e-mail, senha original, perfil e `ativo = 'S'`. |
 
-## Estrutura do projeto
+## Configurações opcionais
 
-```text
-public/                 Páginas, API, imagens, JavaScript e CSS
-includes/               Sessão, autorização, funções e templates compartilhados
-src/Controller/         Entrada das operações do backend
-src/Services/           Validação, cadastros, autenticação e pagamentos
-src/Repository/         Consultas e schema SQL
-src/Entity/             Entidades do sistema
-config/xml/             Mapeamentos do Doctrine
-bin/control             Comandos de console do Doctrine
-tests/                  Testes de integração e do carrinho
-bootstrap.php           Inicialização do Doctrine e conexão com o banco
-```
-
-As dependências e arquivos locais, como `vendor/`, `node_modules/`, logs e configurações `.env`, são ignorados pelo Git. Mantenha `composer.json`, `composer.lock` e o schema SQL no repositório.
+As variáveis de ambiente `KRIKOS_WHATSAPP` (número com país e DDD), `KRIKOS_INSTAGRAM` (perfil) e `KRIKOS_SUPPORT_EMAIL` (e-mail) configuram contatos do cardápio e suporte. Defina-as no ambiente do servidor PHP antes de iniciá-lo.
